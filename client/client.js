@@ -4,6 +4,7 @@ var express = require( 'express' )
   , app = express();
 
 var PORT = 40999;
+var SESSION = 0;
  
 app.use( cookieSession({
   name: 'sessionId',
@@ -17,7 +18,11 @@ app.set( 'view engine', 'ejs' );
 app.use( express.static( 'res' ) );
 
 app.get( '/', function( req, res ){
-  req.session.temp = 1;
+  if( req.cookies.sessionId === undefined ){
+    req.session.id = SESSION;
+    SESSION++;
+  }
+
   res.render( 'main' );
   res.end();
 

@@ -1,33 +1,33 @@
 var WebSocket = require( 'ws' )
   , wss = new WebSocket.Server({ port: 51999 })
   , cookie = require( 'cookie' )
-  , mainSvc = require( './service/mainService' );
+  , mainSvc = require( './service/mainService' )( WebSocket );
 
-var GLOBAL = { clients:{}, needUser: 5 };
+var SERVER = { clients:{}, needUser: 2 };
 
 wss.on( 'connection', function( ws ){
   var cookies = cookie.parse( ws.upgradeReq.headers.cookie );
 
-  if( GLOBAL.clients[ cookie.sessionId ] === undefined )
-    GLOBAL.clients[ cookies.sessionId ] = ws;
+  if( SERVER.clients[ cookie.sessionId ] === undefined ){
+    SERVER.clients[ cookies.sessionId ] = ws;
+    SERVER.clients[ cookies.sessionId ].sessionId = cookies.sessionId;
+  }
 
   ws.on( 'message', function( msg ){
-    mainSvc.start( GLOBAL.clients );
+    var data = JSON.parse( msg );
 
-    for( var c in GLOBAL.clients ){
-      var client = GLOBAL.clients[ c ];
+    switch( parseInt( data.step ) ){
+      case 0:
+        mainSvc.start( SERVER );
+      break; 
 
-      if(client.readyState === WebSocket.OPEN) {
+      case 1:
+        mainSvc.removeCard( SERVER, data );
+      break;
 
-        if( GLOBAL.clients.length == GLOBAL.needUser ){
-          client.send({ msg: 'start' });
-
-          return;
-        }
-
-        var data = { currentUser: Object.keys( GLOBAL.clients ).length };
-        client.send( JSON.stringify( data ) );
-      }
+      case 2:
+        mainSvc.pass( SERVER, data );
+      break;
     }
   });
 });

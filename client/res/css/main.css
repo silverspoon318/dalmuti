@@ -1,32 +1,9 @@
-body{ margin:0;overflow:hidden;background-color:white;color:black;font-style:normal;font-size:10.5pt; }
-.top{ position:relative;float:left;top:0;left:45%; }
-.top img{ position:relative;float:left;margin:-0.5em 0.3em 0 0;width:1.5em;height:1.5em; }
-.top_right{ position:fixed;top:0.5em;right:1em;z-index:999; }
-.top_right .btn{ width:4em;height:2.5em;padding:0;border:0;border-radius:9px;background-color:white;cursor:pointer;outline:0; }
-.top_right .conn{ background-color:#247B8A;border:2px dotted white;color:white; }
-.top_right .close{ background-color:#CC3D3D;border:2px dotted white;color:white; }
-.top_right .status, .top_right .now{ clear:both;margin-top:0.5em;font-weight:bold;font-size:8pt; }
-.wrap{ clear:both;position:relative;float:left;top:2em; }
-.box{ display:none;position:relative;float:left;margin:0.5em;width:10em;height:5em;border:1px solid #e1e1e1;border-radius:8px;z-index:999;cursor:pointer; }
-.box .box_left{ position:relative;float:left;margin:0.5em 0 0 0.5em;border-right:1px solid #e1e1e1;width:4.3em;height:4em; }
-.box .box_left .title{ position:relative;float:left;margin-top:0.6em;width:3.5em;text-align:center;word-break:break-all; }
-.box .box_left .title span{ font-size:9pt;font-weight:bold; }
-.box .box_right{ position:relative;float:left;margin:0 0 0 0.5em;width:4.5em;height:4em; }
-.box .box_right .code{ font-size:10pt;font-weight:bold; }
-.box .box_right .spend{ margin-top:-0.5em;font-size:9pt;font-weight:bold;text-align:center; }
-.success{ border:2px solid #469840 }
-.success .code{ color:#469840;text-align:center; }
-.error{ border:2px solid #C90000; }
-.error .code{ color:#C90000;text-align:center; }
-.desc{ display:none;position:fixed;z-index:1;left:0;top:0;width:100%;height:100%; }
-.desc .conts{ position:absolute;top:0;left:25%;width:55em;height:100%;border:1px solid #e1e1e1;background-color:white; }
-.desc .conts canvas{ position:relative;float:left;margin:3em 0 0 -3em; }
-.desc .conts h4{ position:relative;float:left;margin-top:1em;left:40%; }
-.desc .conts .result{ position:relative;float:left;margin-top:0.5em;width:100%; }
-.desc .conts .title{ position:relative;float:left;width:100%;font-weight:bold;font-size:9pt;margin:0.5em; }
-.desc .conts .error_code{ margin-left:1em;color:#C90000; }
-.desc .conts pre{ position:relative;float:left;margin:-0.1em;width:calc(100% + 0.2em);background-color:#232323; }
-.desc .conts code{ margin-left:1em;white-space:pre-wrap;max-height:36em;overflow-y:auto; }
-.desc .close{ position:absolute;top:1em;right:1em;width:4em;height:3em;border:1px solid #ccc;border-radius:9px;cursor:pointer;background-color:white; }
-.copy{ position:absolute;bottom:0;width:100%;height:2em;background-color:black; }
-.copy span{ position:absolute;right:1em;bottom:0.7em;color:white;font-size:8pt; }
+body{ margin:0;overflow:hidden;font-size:10.5pt; }
+.myturn { position:fixed;width:99.2%;height:98%;border:3px dotted #980000; }
+.btn{ width:3em;height:3em;padding:0;border:1px solid #ccc;border-radius:5px;background-color:black;cursor:pointer;outline:0;color:white }
+.result{ position:relative;float:left;width:15em;height:5em;top:3em;left:3em;border:2px solid #e1e1e1; }
+.floor{ clear:both;position:relative;float:left;width:15em;height:5em;top:5em;left:3em;border:2px solid #e1e1e1; }
+.my{ position:fixed;bottom:0;width:100%;height:20em;text-align:center;overflow:auto; }
+.my .card{ position:relative;float:left;width:5em;height:5em;border:1px solid #e1e1e1;cursor:pointer; }
+.my .card-up{ position:relative;float:left;width:5em;height:5em;background-color:#980000;border:1px solid #e1e1e1;cursor:pointer; }
+.my button{ clear:both; }
