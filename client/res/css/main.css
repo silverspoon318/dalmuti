@@ -1,5 +1,4 @@
 body{ margin:0;overflow:hidden;font-size:10.5pt; }
-.myturn { position:fixed;width:99.2%;height:98%;border:3px dotted #980000; }
 .btn{ width:3em;height:3em;padding:0;border:1px solid #ccc;border-radius:5px;background-color:black;cursor:pointer;outline:0;color:white }
 .result{ position:relative;float:left;width:15em;height:5em;top:3em;left:3em;border:2px solid #e1e1e1; }
 .floor{ clear:both;position:relative;float:left;width:15em;height:5em;top:5em;left:3em;border:2px solid #e1e1e1; }

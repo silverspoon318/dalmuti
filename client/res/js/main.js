@@ -4,7 +4,7 @@
   var dalmuti = window.dalmuti = {
     ws: null,
     wsUrl: 'ws://de-php-api.fttinc.kr:51999',
-    cardUp: {} 
+    cardUp: [] 
   };
 
   var BODY = $( 'body' ) 
@@ -36,7 +36,7 @@
         console.log( data );
         RESULT.empty().text( data.msg );
 
-        if( data.isStart ){
+        if( data.gameStatus >= 1 ){
           func.init( data );
           func.viewCard( data );
         }
@@ -55,9 +55,10 @@
   var func = {
     init: function( data ){
       if( data.turnUser == data.my.sessionId )
-        BODY.attr( 'class', 'myturn' );
-      else
-        BODY.attr( 'class', '' );
+        RESULT.append( '<br />myturn<br />' );
+
+      if( data.kingUser == data.my.sessionId )
+        RESULT.append( '<br />king<br />' );
     },
 
     viewCard: function( data ){
@@ -66,6 +67,7 @@
       FLOOR.text( data.floorCard.grade + ' - ' + data.floorCard.count );
 
       var my = data.my;
+      my.card = _.sortBy( my.card, 'grade' );
 
       for( var m in my.card ){
         if( my.card[ m ] == null )
@@ -75,27 +77,33 @@
           $( '<div />' )
           .attr( 'class', 'card' )
           .data({ id: my.card[ m ].id, grade: my.card[ m ].grade })
-          .text( my.card[ m ].grade + ' / ' + my.card[ m ].id )
+          .text( my.card[ m ].grade )
           .click( function(){
             var oThis = $( this )
               , cls = oThis.attr( 'class' )
               , id = oThis.data( 'id' )
               , grade = oThis.data( 'grade' );
 
-            if( cls == 'card-up' )
-              $( this ).attr( 'class', 'card' );
-            else
-              $( this ).attr( 'class', 'card-up' );
+            MY.find( 'div' ).each( function( k, v ){
+              if( $( v ).data( 'grade' ) == grade ){
 
-            window.dalmuti.cardUp = [];
+                if( cls == 'card-up' )
+                  $( this ).attr( 'class', 'card' );
+                else
+                  $( this ).attr( 'class', 'card-up' );
+              }
 
-            MY.find( '.card-up' ).each( function( k, v ){
+              if( k == MY.find( 'div' ).length -1 ){
+                window.dalmuti.cardUp = [];
 
-              var t = $( v )
-                , id = t.data( 'id' )
-                , grade = t.data( 'grade' );
+                MY.find( '.card-up' ).each( function( k, v ){
+                  var t = $( v )
+                    , id = t.data( 'id' )
+                    , grade = t.data( 'grade' );
 
-              window.dalmuti.cardUp.push({ id: id, grade: grade });
+                  window.dalmuti.cardUp.push({ id: id, grade: grade });
+                });
+              }
             });
           });
 
@@ -105,10 +113,12 @@
       MY.append(
         $( '<button />' ).attr( 'class', 'btn' ).text( 'give' ).click( function(){
           server.sendMsg({ step: 1, user: my.sessionId, card: window.dalmuti.cardUp });
+          window.dalmuti.cardUp = [];
         })
       ).append(
         $( '<button />' ).attr( 'class', 'btn' ).text( 'pass' ).click( function(){
           server.sendMsg({ step: 2, user: my.sessionId });
+          window.dalmuti.cardUp = [];
         })
       );
     },

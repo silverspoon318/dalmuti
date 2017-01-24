@@ -3,7 +3,8 @@ var WebSocket = require( 'ws' )
   , cookie = require( 'cookie' )
   , mainSvc = require( './service/mainService' )( WebSocket );
 
-var SERVER = { clients:{}, needUser: 2 };
+var SERVER = { clients:{}, needUser: 3 };
+mainSvc.init();
 
 wss.on( 'connection', function( ws ){
   var cookies = cookie.parse( ws.upgradeReq.headers.cookie );
@@ -18,7 +19,7 @@ wss.on( 'connection', function( ws ){
 
     switch( parseInt( data.step ) ){
       case 0:
-        mainSvc.start( SERVER );
+        mainSvc.start( SERVER, cookies.sessionId );
       break; 
 
       case 1:
