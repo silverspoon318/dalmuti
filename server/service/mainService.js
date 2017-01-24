@@ -73,14 +73,13 @@
     giveCard: function( clients ){
       while( DALMUTI.card.length > 0 ){
         for( var c in clients ){
-          for( var q = 0, w = DALMUTI.perCard; q < w; q++ ){
-            if( DALMUTI.card.length <= 0 ){
-              DALMUTI.turnUser = Object.keys( DALMUTI.users )[ DALMUTI.turn ];
-              func.allSend( clients, { msg: 'card end.' } );
-              return;
-            }
-
+          for( var q = 0, w = DALMUTI.perCard; q < w; q++ )
             func.giveOneCard( c, clients[ c ] );
+
+          if( DALMUTI.card.length <= 0 ){
+            DALMUTI.turnUser = Object.keys( DALMUTI.users )[ DALMUTI.turn ];
+            func.allSend( clients, { msg: 'card end.' } );
+            break;
           }
 
           func.oneSend( clients[ c ], DALMUTI.card );
@@ -214,8 +213,11 @@
       DALMUTI.kingUser = data.user;
       DALMUTI.turnUser = nextUser;
 
-      if( DALMUTI.users[ DALMUTI.turnUser ].length == 0 ){
+      while( DALMUTI.users[ DALMUTI.turnUser ].length == 0 ){
         DALMUTI.turn++;
+        if( DALMUTI.turn == SERVER.needUser )
+          DALMUTI.turn = 0;
+
         nextUser = Object.keys( DALMUTI.users )[ DALMUTI.turn ];
         DALMUTI.turnUser = nextUser;
 

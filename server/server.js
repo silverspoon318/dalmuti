@@ -3,7 +3,7 @@ var WebSocket = require( 'ws' )
   , cookie = require( 'cookie' )
   , mainSvc = require( './service/mainService' )( WebSocket );
 
-var SERVER = { clients:{}, needUser: 3 };
+var SERVER = { clients:{}, needUser: 4 };
 mainSvc.init();
 
 wss.on( 'connection', function( ws ){
