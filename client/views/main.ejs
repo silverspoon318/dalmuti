@@ -1,13 +1,35 @@
 <!DOCTYPE html>
 <head>
   <title>Dalmuti</title>
+  <link rel="shortcut icon" href="/img/a.jpg" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/main.css" />
 </head>
 <body>
-  <div id="d_result" class="result"></div>
-  <div id="d_floor" class="floor"></div>
-  <div id="d_other" class="other"></div>
-  <div id="d_my" class="my"></div>
+  <div id="d_connect" class="connect">
+    <div class="box">
+      <p class="title"><b>Dalmuti</b></p>
+      <p class="name">
+        <input id="i_name" type="text" placeholder="이름" />
+        <br />
+        <button id="btn_start" class="btn"><b>시작</b></button>
+      </p>
+    </div>
+    <div class="box">
+      <p class="title"><b><small>접속 유저</small></b></p>
+      <p>
+        <ul id="u_connect_user"></ul>
+      </p>
+    </div>
+  </div>
+  <div id="d_game" class="game">
+    <div id="d_result" class="result">
+<pre></pre>
+    </div>
+    <div id="d_floor" class="floor"></div>
+    <div id="d_other" class="other"></div>
+    <div id="d_my" class="my"></div>
+  </div>
 </body>
 </html>
 <script type="text/javascript" src="js/jquery.min.js"></script>

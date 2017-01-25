@@ -16,7 +16,7 @@
       DALMUTI = {
         gameStatus: 0,
         grade: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
-        card: [ { id: 1, grade: -1 }, { id: 1, grade: -1 } ],
+        card: [ { id: 1, grade: -1 }, { id: 2, grade: -1 } ],
         max: 80,
         perCard: 1,
         users: {},
@@ -41,53 +41,49 @@
       }
     },
 
-    start: function( SERVER, sessionId ){
-      var clientsLength = Object.keys( SERVER.clients ).length;
-
+    start: function( CLIENTS, SERVER, sessionId ){
       if( DALMUTI.gameStatus == 1 ){
         if( !DALMUTI.users[ sessionId ] ){
-          SERVER.clients[ sessionId ].send( JSON.stringify( { msg: 'Wait for another game in progress.' } ) );
-          delete SERVER.clients[ sessionId ];
+          func.oneSend( CLIENTS[ sessionId ], { dalmuti: func.addMsg( '다른 게임 실행 중입니다.' ), server: SERVER } );
+          delete CLIENTS[ sessionId ];
           return;
         }
       }
 
       if( DALMUTI.gameStatus != 1 ){
-        if( clientsLength == SERVER.needUser ){
+        if( SERVER.readyLength == SERVER.needUser ){
           func.init();
 
           DALMUTI.gameStatus = 1;
 
-          func.allSend( SERVER.clients, { msg: 'game start.' } );
-          func.giveCard( SERVER.clients );
-
+          func.allSend( CLIENTS, { dalmuti: func.addMsg( '게임 시작합니다.' ), server: SERVER } );
+          func.giveCard( CLIENTS, SERVER );
           return;
         }
       }
 
-      DALMUTI.serverClients = clientsLength; 
-
-      func.allSend( SERVER.clients, DALMUTI );
+      func.allSend( CLIENTS, { dalmuti: DALMUTI, server: SERVER } );
     },
 
-    giveCard: function( clients ){
+    giveCard: function( CLIENTS, SERVER ){
       while( DALMUTI.card.length > 0 ){
-        for( var c in clients ){
+        for( var c in CLIENTS ){
           for( var q = 0, w = DALMUTI.perCard; q < w; q++ )
-            func.giveOneCard( c, clients[ c ] );
+            func.giveOneCard( c, CLIENTS[ c ], SERVER );
 
           if( DALMUTI.card.length <= 0 ){
             DALMUTI.turnUser = Object.keys( DALMUTI.users )[ DALMUTI.turn ];
-            func.allSend( clients, { msg: 'card end.' } );
+            DALMUTI.kingUser = Object.keys( DALMUTI.users )[ DALMUTI.turn ];
+            func.allSend( CLIENTS, { dalmuti: func.addMsg( '카드 나눠주기 끝났습니다. 게임 시작할께요.' ), server: SERVER } );
             break;
           }
 
-          func.oneSend( clients[ c ], DALMUTI.card );
+          func.oneSend( CLIENTS[ c ], { dalmuti: DALMUTI, server: SERVER } );
         }
       }
     },
 
-    giveOneCard: function( id, client ){
+    giveOneCard: function( id, client, SERVER ){
       var idx = func.random();
 
       if( DALMUTI.card[ idx ] ){
@@ -98,7 +94,7 @@
           DALMUTI.users[ id ] = [];
 
         DALMUTI.users[ id ].push( card );
-        func.oneSend( client, card );
+        func.oneSend( client, { dalmuti: DALMUTI, server: SERVER } );
         return;
       }
 
@@ -109,25 +105,25 @@
 
           DALMUTI.card.splice( idx, 1 );
           DALMUTI.users[ id ].push( card );
-          func.oneSend( client, card );
+          func.oneSend( client, { dalmuti: DALMUTI, server: SERVER } );
           return;
         }
       }
     },
 
-    removeCard: function( SERVER, data ){
+    removeCard: function( CLIENTS, SERVER, data ){
       if( DALMUTI.gameStatus != 1 ){
-        func.oneSend( SERVER.clients[ data.user ], { msg: 'Game is not start.' } ); 
+        func.oneSend( CLIENTS[ data.user ], { dalmuti: func.addMsg( '게임이 아직 시작되지 않았습니다.' ), server: SERVER } );
         return false;
       }
 
       if( DALMUTI.turnUser != data.user ){
-        func.oneSend( SERVER.clients[ data.user ], { msg: 'Not your turn.' } ); 
+        func.oneSend( CLIENTS[ data.user ], { dalmuti: func.addMsg( '자기 차례가 아니에요.' ), server: SERVER } );
         return false;
       }
 
       if( Object.keys( data.card ).length == 0 ){
-        func.oneSend( SERVER.clients[ data.user ], { msg: 'Card is null.' } ); 
+        func.oneSend( CLIENTS[ data.user ], { dalmuti: func.addMsg( '카드를 선택해 주세요.' ), server: SERVER } );
         return false;
       }
 
@@ -143,25 +139,26 @@
           jockerCount++;
 
           if( jockerCount == Object.keys( card ).length ){
-            func.oneSend( SERVER.clients[ data.user ], { msg: 'Joker error.' } ); 
+            func.oneSend( CLIENTS[ data.user ], { dalmuti: func.addMsg( '조커는 다른 카드와 함께 내야합니다.' ), server: SERVER } );
             return false;
           }
+
           continue;
         }
 
         if( beforeCard.grade != 0 && beforeCard.grade != cd.grade ){
-          func.oneSend( SERVER.clients[ data.user ], { msg: 'Only cards of the same rank are possible.' } ); 
+          func.oneSend( CLIENTS[ data.user ], { dalmuti: func.addMsg( '같은 등급의 카드만 낼 수 있어요.' ), server: SERVER } );
           return false;
         }
 
         if( !DALMUTI.floorCard.isAnything ){
           if( DALMUTI.floorCard.grade <= cd.grade ){
-            func.oneSend( SERVER.clients[ data.user ], { msg: 'Only grades smaller than floor cards are allowed.' } ); 
+            func.oneSend( CLIENTS[ data.user ], { dalmuti: func.addMsg( '바닥의 카드 등급보다 낮은 등급만 낼 수 있어요.' ), server: SERVER } );
             return false;
           }
         
           if( DALMUTI.floorCard.count != Object.keys( card ).length ){
-            func.oneSend( SERVER.clients[ data.user ], { msg: 'Its different from the number of cards on the floor.' } ); 
+            func.oneSend( CLIENTS[ data.user ], { dalmuti: func.addMsg( '바닥의 카드와 동일한 수량만 낼 수 있어요.' ), server: SERVER } );
             return false;
           }
         }
@@ -177,14 +174,14 @@
                 DALMUTI.users[ data.user ].splice( k, 1 );
 
                 if( Object.keys( userCard ).length == 0 ){
-                  func.finish( SERVER, data );
+                  func.finish( CLIENTS, SERVER, data );
                   return false;
                 }
               }
             }
 
             if( co == Object.keys( card ).length -1 ){
-              func.turnNext( SERVER, data, { grade: cd.grade, count: parseInt( c ) +1 } );
+              func.turnNext( CLIENTS, SERVER, data, { grade: cd.grade, count: parseInt( c ) +1 } );
               return;
             }
           }
@@ -194,16 +191,21 @@
       }
     },
 
-    pass: function( SERVER, data ){
+    pass: function( CLIENTS, SERVER, data ){
       if( DALMUTI.turnUser != data.user ){
-        func.oneSend( SERVER.clients[ data.user ], { msg: 'You can pass only on your turn' } );
+        func.oneSend( CLIENTS[ data.user ], { dalmuti: func.addMsg( '자기 차례에만 패스 할 수 있습니다.' ), server: SERVER } );
         return;
       }
 
-      func.turnNext( SERVER, { user: DALMUTI.kingUser }, DALMUTI.floorCard );
+      if( DALMUTI.floorCard.grade == 0 ){
+        func.oneSend( CLIENTS[ data.user ], { dalmuti: func.addMsg( '바닥 카드가 없으므로 패스 할 수 없어요.' ), server: SERVER } );
+        return;
+      }
+
+      func.turnNext( CLIENTS, SERVER, { user: DALMUTI.kingUser }, DALMUTI.floorCard );
     },
 
-    turnNext: function( SERVER, data, floorCard ){
+    turnNext: function( CLIENTS, SERVER, data, floorCard ){
       DALMUTI.turn++;
       if( DALMUTI.turn == SERVER.needUser )
         DALMUTI.turn = 0;
@@ -232,19 +234,19 @@
       DALMUTI.floorCard = floorCard;
       DALMUTI.msg = null;
 
-      func.allSend( SERVER.clients, DALMUTI );
+      func.allSend( CLIENTS, { dalmuti: DALMUTI, server: SERVER } );
     },
 
-    finish: function( SERVER, data ){
+    finish: function( CLIENTS, SERVER, data ){
       DALMUTI.winner.push( data.user );
 
       if( DALMUTI.winner.length == Object.keys( DALMUTI.users ).length -1 ){
         DALMUTI.gameStatus = 2;
-        func.allSend( SERVER.clients, { msg: 'game end.' } );
+        func.allSend( CLIENTS, { dalmuti: func.addMsg( '게임이 끝났습니다. 순위를 확인해 주세요.' ), server: SERVER } );
         return;
       }
 
-      func.turnNext( SERVER, { user: data.user }, DALMUTI.floorCard );
+      func.turnNext( CLIENTS, SERVER, { user: data.user }, DALMUTI.floorCard );
     },
 
     random: function(){
@@ -252,38 +254,41 @@
     },
 
     getDalmuti: function(){
-      return DALMUTI;           
+      return DALMUTI;
+    },
+
+    addMsg: function( msg ){
+      DALMUTI.msg = msg; 
+
+      return DALMUTI;
     },
 
     oneSend: function( client, obj ){
-      var sendData = deepExtend( DALMUTI, obj );
-
       if( client.readyState === WEBSOCKET.OPEN ){
-      
+        obj.server.my = { sessionId: client.sessionId };
+
         if( DALMUTI.gameStatus >= 1 ){
-          if( DALMUTI.users ){
-            sendData.my = { sessionId: client.sessionId, card: DALMUTI.users[ client.sessionId ] };
-          }
+          if( DALMUTI.users )
+            obj.dalmuti.mycard = DALMUTI.users[ client.sessionId ];
         }
 
-        client.send( func.serial( sendData ) ); 
+        client.send( func.serial( obj ) ); 
       }
     },
 
-    allSend: function( clients, obj ){
-      var sendData = deepExtend( DALMUTI, obj );
-
-      for( var c in clients ){
-        var client = clients[ c ];
+    allSend: function( CLIENTS, obj ){
+      for( var c in CLIENTS ){
+        var client = CLIENTS[ c ];
 
         if( client.readyState === WEBSOCKET.OPEN ){
+          obj.server.my = { sessionId: client.sessionId };
+
           if( DALMUTI.gameStatus >= 1 ){
-            if( DALMUTI.users ){
-              sendData.my = { sessionId: client.sessionId, card: DALMUTI.users[ client.sessionId ] };
-            }
+            if( DALMUTI.users )
+              obj.dalmuti.mycard = DALMUTI.users[ client.sessionId ];
           }
 
-          client.send( func.serial( sendData ) ); 
+          client.send( func.serial( obj ) ); 
         }
       }
     },
