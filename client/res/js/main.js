@@ -52,29 +52,26 @@
       RESULT.empty();
       RESULT.append( '내 이름 : ' + server.names[ server.my.sessionId ] + '\n\n' );
 
-      if( dalmuti.turnUser == server.my.sessionId )
+      if( dalmuti.turnUser == server.my.sessionId ){
         RESULT.append( '내 차례\n\n' );
+
+        if( dalmuti.floorCard.isAnything )
+          RESULT.append( '다시 왕이되어서, 새로운 조합의 카드를 낼 수 있어요\n\n' );
+      }
 
       if( dalmuti.kingUser == server.my.sessionId )
         RESULT.append( '왕이에요\n\n' );
-
-      if( dalmuti.floorCard.isAnything )
-        RESULT.append( '다시 왕이되어서, 새로운 조합의 카드를 낼 수 있어요\n\n' );
 
       if( dalmuti.users ){
         for( var d in dalmuti.users ){
           RESULT.append( '유저 ' + server.names[ d ] + ' 남은 카드수 : ' + dalmuti.users[ d ].length + '\n' );
         }
-
-        RESULT.append( '\n' );
       }
 
       if( dalmuti.winner ){
         for( var w in dalmuti.winner ){
           RESULT.append( '순위 ' + ( parseInt( w ) +1 ) + '위 : ' + server.names[ dalmuti.winner[ w ] ] + '\n' );
         }
-
-        RESULT.append( '\n' );
       }
 
       if( dalmuti.msg != null )
@@ -128,7 +125,6 @@
           $( '<div />' )
           .attr( 'class', 'card' )
           .data({ id: mycard[ m ].id, grade: mycard[ m ].grade })
-          .text( mycard[ m ].grade )
           .click( function(){
             var oThis = $( this )
               , cls = oThis.attr( 'class' )
@@ -153,7 +149,8 @@
                 });
               }
             });
-          });
+          })
+          .append( $( '<img />' ).attr( 'src', 'img/g_' + mycard[ m ].grade + '.jpg' ) );
 
         MY.append( card );
       }

@@ -19,23 +19,29 @@ wss.on( 'connection', function( ws ){
   ws.on( 'message', function( msg ){
     var data = JSON.parse( msg );
 
-    switch( parseInt( data.step ) ){
-      case 0:
-        mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.getDalmuti(), server: SERVER } );
-      break;
-      case 1:
-        CLIENTS[ cookies.sessionId ].ready = 1;
-        SERVER.readyLength++;
-        SERVER.names[ cookies.sessionId ] = data.name;
+    try{
+      switch( parseInt( data.step ) ){
+        case 0:
+          mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.getDalmuti(), server: SERVER } );
+        break;
+        case 1:
+          if( cookies.sessionId !== undefined ){
+            CLIENTS[ cookies.sessionId ].ready = 1;
+            SERVER.readyLength++;
+            SERVER.names[ cookies.sessionId ] = data.name;
 
-        mainSvc.start( CLIENTS, SERVER, cookies.sessionId );
-      break; 
-      case 2:
-        mainSvc.removeCard( CLIENTS, SERVER, data );
-      break;
-      case 3:
-        mainSvc.pass( CLIENTS, SERVER, data );
-      break;
+            mainSvc.start( CLIENTS, SERVER, cookies.sessionId );
+          }
+        break; 
+        case 2:
+          mainSvc.removeCard( CLIENTS, SERVER, data );
+        break;
+        case 3:
+          mainSvc.pass( CLIENTS, SERVER, data );
+        break;
+      }
+    } catch( e ){
+      mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.addMsg( e.getMessage() ), server: SERVER } );
     }
   });
 });

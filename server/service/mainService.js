@@ -29,6 +29,7 @@
 
     init: function(){
       func.optionInit();
+
       var num = 3; 
 
       for( var g in DALMUTI.grade ){
