@@ -4,7 +4,7 @@ var WebSocket = require( 'ws' )
   , mainSvc = require( './service/mainService' )( WebSocket );
 
 var CLIENTS = {};
-var SERVER = { readyLength: 0, needUser: 2, names: {}, my: null };
+var SERVER = { readyLength: 0, needUser: 4, names: {}, my: null };
 mainSvc.init();
 
 wss.on( 'connection', function( ws ){

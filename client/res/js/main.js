@@ -52,6 +52,9 @@
       RESULT.empty();
       RESULT.append( '내 이름 : ' + server.names[ server.my.sessionId ] + '\n\n' );
 
+      RESULT.append( '왕인 유저 : ' + server.names[ dalmuti.kingUser ] + '\n' );
+      RESULT.append( '현재 턴 유저 : ' + server.names[ dalmuti.turnUser ] + '\n\n' );
+
       if( dalmuti.turnUser == server.my.sessionId ){
         RESULT.append( '내 차례\n\n' );
 
@@ -69,6 +72,8 @@
       }
 
       if( dalmuti.winner ){
+        RESULT.append( '\n' );
+
         for( var w in dalmuti.winner ){
           RESULT.append( '순위 ' + ( parseInt( w ) +1 ) + '위 : ' + server.names[ dalmuti.winner[ w ] ] + '\n' );
         }
@@ -84,6 +89,7 @@
 
        if( server.names[ server.my.sessionId ] ){
          func.viewGame();
+         RESULT.text( ( server.needUser - Object.keys( server.names ).length ) + '명 입장을 기다리고 있습니다.' );
 
          if( dalmuti.gameStatus >= 1 ){
            func.info( server, dalmuti );
@@ -92,6 +98,7 @@
        
        } else {
          CONNECT.show();
+         CONNECT.find( '#s_need_user' ).text( server.needUser + '명' );
 
          if( server.names[ server.my ] ){
            func.viewGame( server );
