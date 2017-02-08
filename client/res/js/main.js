@@ -15,9 +15,12 @@
     , CONNECT = $( '#d_connect' ) 
     , GAME = $( '#d_game' ) 
     , RESULT = $( '#d_result' ).find( 'pre' )
+    , USERS = $( '#d_users' ).find( 'pre' )
+    , WINNER = $( '#d_winner' ).hide().find( 'pre' )
     , FLOOR = $( '#d_floor' )
     , MY = $( '#d_my' )
     , OTHER = $( '#d_other' )
+    , IN_NAME = $( '#i_name' )
     , BTN_START = $( '#btn_start' );
 
   var wsFunc = {
@@ -50,32 +53,34 @@
   var func = {
     info: function( server, dalmuti ){
       RESULT.empty();
-      RESULT.append( '내 이름 : ' + server.names[ server.my.sessionId ] + '\n\n' );
+      USERS.empty();
+      WINNER.empty();
 
-      RESULT.append( '왕인 유저 : ' + server.names[ dalmuti.kingUser ] + '\n' );
-      RESULT.append( '현재 턴 유저 : ' + server.names[ dalmuti.turnUser ] + '\n\n' );
+      RESULT.append( '<h4>' + server.names[ server.my.sessionId ] + '</h4>' );
 
       if( dalmuti.turnUser == server.my.sessionId ){
-        RESULT.append( '내 차례\n\n' );
+        RESULT.append( '<b class="text-red">내 차례</b>\n\n' );
+
+        if( dalmuti.kingUser == server.my.sessionId )
+          RESULT.append( '<b class="text-red">왕이에요</b>\n\n' );
 
         if( dalmuti.floorCard.isAnything )
-          RESULT.append( '다시 왕이되어서, 새로운 조합의 카드를 낼 수 있어요\n\n' );
+          RESULT.append( '다시 왕이 되어서, 새로운 조합의 카드를 낼 수 있어요\n\n' );
       }
 
-      if( dalmuti.kingUser == server.my.sessionId )
-        RESULT.append( '왕이에요\n\n' );
-
+      USERS.append( '왕인 유저 : ' + server.names[ dalmuti.kingUser ] + '\n' );
+      USERS.append( '현재 유저 : ' + server.names[ dalmuti.turnUser ] + '\n\n' );
       if( dalmuti.users ){
         for( var d in dalmuti.users ){
-          RESULT.append( '유저 ' + server.names[ d ] + ' 남은 카드수 : ' + dalmuti.users[ d ].length + '\n' );
+          USERS.append( '유저 ' + server.names[ d ] + ' 남은 카드수 : ' + dalmuti.users[ d ].length + '\n\n' );
         }
       }
 
       if( dalmuti.winner ){
-        RESULT.append( '\n' );
+        WINNER.show();
 
         for( var w in dalmuti.winner ){
-          RESULT.append( '순위 ' + ( parseInt( w ) +1 ) + '위 : ' + server.names[ dalmuti.winner[ w ] ] + '\n' );
+          WINNER.append( '순위 ' + ( parseInt( w ) +1 ) + '위 : ' + server.names[ dalmuti.winner[ w ] ] + '\n' );
         }
       }
 
@@ -87,28 +92,29 @@
        var server = data.server
          , dalmuti = data.dalmuti;
 
-       if( server.names[ server.my.sessionId ] ){
+       if( dalmuti.gameStatus >= 1 ){
          func.viewGame();
-         RESULT.text( ( server.needUser - Object.keys( server.names ).length ) + '명 입장을 기다리고 있습니다.' );
-
-         if( dalmuti.gameStatus >= 1 ){
-           func.info( server, dalmuti );
-           func.viewCard( server, dalmuti );
-         }
-       
+         func.info( server, dalmuti );
+         func.viewCard( server, dalmuti );
        } else {
-         CONNECT.show();
-         CONNECT.find( '#s_need_user' ).text( server.needUser + '명' );
 
-         if( server.names[ server.my ] ){
-           func.viewGame( server );
-           return false;
+         if( server.names[ server.my.sessionId ] ){
+           IN_NAME.attr( 'disabled', true ).val( server.names[ server.my.sessionId ] ).css({ 'font-size': '12pt', 'font-weight': 'bold' });
+           BTN_START.attr( 'disabled', true ).css({ 'background-color': '#ccc', 'width': '13em' }).text( '필요 인원을 기다려 주세요.' );
          }
 
-         uConnectUser.empty();
-         for( var n in server.names )
-           uConnectUser.append( '<li>' + server.names[ n ] + '</li>' );
+         CONNECT.show();
+         CONNECT.find( '#s_need_user' ).html( '<b>' + server.needUser + '명</b>' );
        }
+
+       if( server.names[ server.my ] ){
+         func.viewGame( server );
+         return false;
+       }
+
+       uConnectUser.empty();
+       for( var n in server.names )
+         uConnectUser.append( '<li><b>' + server.names[ n ] + '</b></li>' );
     },
 
     viewGame: function(){
@@ -119,7 +125,7 @@
     viewCard: function( server, dalmuti ){
       MY.empty();
       OTHER.empty();
-      FLOOR.text( dalmuti.floorCard.grade + ' - ' + dalmuti.floorCard.count );
+      FLOOR.html( '<b>바닥 카드 : ' + dalmuti.floorCard.grade + ' - ' + dalmuti.floorCard.count + '</b>' );
 
       var mycard = dalmuti.mycard;
       mycard = _.sortBy( mycard, 'grade' );
@@ -162,24 +168,25 @@
         MY.append( card );
       }
 
+
       MY.append(
-        $( '<button />' ).attr( 'class', 'btn' ).text( 'give' ).click( function(){
-          wsFunc.sendMsg({ step: 2, user: server.my.sessionId, card: window.dalmuti.cardUp });
-          window.dalmuti.cardUp = [];
-        })
-      ).append(
-        $( '<button />' ).attr( 'class', 'btn' ).text( 'pass' ).click( function(){
-          wsFunc.sendMsg({ step: 3, user: server.my.sessionId });
-          window.dalmuti.cardUp = [];
-        })
+        $( '<div />' ).attr( 'class', 'button' ).append(
+          $( '<button />' ).attr( 'class', 'btn' ).text( '카드 내기' ).click( function(){
+            wsFunc.sendMsg({ step: 2, user: server.my.sessionId, card: window.dalmuti.cardUp });
+            window.dalmuti.cardUp = [];
+          })
+        ).append(
+          $( '<button />' ).attr( 'class', 'btn' ).text( '패스' ).click( function(){
+            wsFunc.sendMsg({ step: 3, user: server.my.sessionId });
+            window.dalmuti.cardUp = [];
+          })
+        )
       );
     },
 
     action: function(){
       BTN_START.click( function(){
-        var iName = $( '#i_name' );
-
-        wsFunc.sendMsg({ step: 1, name: iName.val() });
+        wsFunc.sendMsg({ step: 1, name: IN_NAME.val() });
       });
     }
   };
