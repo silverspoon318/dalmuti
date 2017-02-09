@@ -25,6 +25,13 @@ wss.on( 'connection', function( ws ){
           mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.getDalmuti(), server: SERVER } );
         break;
         case 1:
+          var DALMUTI = mainSvc.getDalmuti();
+
+          if( DALMUTI.gameStatus == 1 ){
+            mainSvc.oneSend( ws, { dalmuti: mainSvc.addMsg( '다른 게임 실행 중입니다.' ), server: SERVER, isDeny: true } );
+            return;
+          }
+
           if( cookies.sessionId !== undefined ){
             CLIENTS[ cookies.sessionId ].ready = 1;
             SERVER.readyLength++;

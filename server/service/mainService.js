@@ -43,14 +43,6 @@
     },
 
     start: function( CLIENTS, SERVER, sessionId ){
-      if( DALMUTI.gameStatus == 1 ){
-        if( !DALMUTI.users[ sessionId ] ){
-          func.oneSend( CLIENTS[ sessionId ], { dalmuti: func.addMsg( '다른 게임 실행 중입니다.' ), server: SERVER } );
-          delete CLIENTS[ sessionId ];
-          return;
-        }
-      }
-
       if( DALMUTI.gameStatus != 1 ){
         if( SERVER.readyLength == SERVER.needUser ){
           func.init();
@@ -68,10 +60,12 @@
 
     giveCard: function( CLIENTS, SERVER ){
       var clientsArr = [];
-      for( var c in CLIENTS ){
+
+      for( var c in SERVER.names ){
+
         clientsArr.push( c );
 
-        if( clientsArr.length == Object.keys( CLIENTS ).length ){
+        if( clientsArr.length == Object.keys( SERVER.names ).length ){
           clientsArr.sort(function(){
             return 0.5 - Math.random();
           });

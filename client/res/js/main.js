@@ -40,6 +40,11 @@
         console.clear();
         console.log( data );
 
+        if( data.isDeny ){
+          alert( data.dalmuti.msg );
+          return;
+        }
+
         if( data.isRefresh )
           location.reload();
 
@@ -98,7 +103,7 @@
        var server = data.server
          , dalmuti = data.dalmuti;
 
-       if( dalmuti.gameStatus >= 1 ){
+       if( dalmuti.gameStatus >= 1 && server.names[ server.my.sessionId ] ){
          func.viewGame();
          func.info( server, dalmuti );
          func.viewCard( server, dalmuti );
@@ -184,7 +189,7 @@
             window.dalmuti.cardUp = [];
           })
         ).append(
-          $( '<button />' ).attr( 'class', 'btn' ).html( '<b>패스</b>' ).click( function(){
+          $( '<button />' ).attr( 'class', 'btn bg-orange' ).html( '<b>패스</b>' ).click( function(){
             wsFunc.sendMsg({ step: 3, user: server.my.sessionId });
             window.dalmuti.cardUp = [];
           })
