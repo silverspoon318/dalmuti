@@ -67,21 +67,35 @@
     },
 
     giveCard: function( CLIENTS, SERVER ){
-      while( DALMUTI.card.length > 0 ){
-        for( var c in CLIENTS ){
-          for( var q = 0, w = DALMUTI.perCard; q < w; q++ )
-            func.giveOneCard( c, CLIENTS[ c ], SERVER );
+      var clientsArr = [];
+      for( var c in CLIENTS ){
+        clientsArr.push( c );
 
-          if( DALMUTI.card.length <= 0 ){
-            DALMUTI.turnUser = Object.keys( DALMUTI.users )[ DALMUTI.turn ];
-            DALMUTI.kingUser = Object.keys( DALMUTI.users )[ DALMUTI.turn ];
-            func.allSend( CLIENTS, { dalmuti: func.addMsg( '카드 나눠주기 끝났습니다. 게임 시작할께요.' ), server: SERVER } );
-            break;
+        if( clientsArr.length == Object.keys( CLIENTS ).length ){
+          clientsArr.sort(function(){
+            return 0.5 - Math.random();
+          });
+
+          while( DALMUTI.card.length > 0 ){
+            for( var c in clientsArr ){
+              var clientId = clientsArr[ c ];
+
+              for( var q = 0, w = DALMUTI.perCard; q < w; q++ )
+                func.giveOneCard( clientId, CLIENTS[ clientId ], SERVER );
+
+              if( DALMUTI.card.length <= 0 ){
+                DALMUTI.turnUser = Object.keys( DALMUTI.users )[ DALMUTI.turn ];
+                DALMUTI.kingUser = Object.keys( DALMUTI.users )[ DALMUTI.turn ];
+                func.allSend( CLIENTS, { dalmuti: func.addMsg( '카드 나눠주기 끝났습니다. 게임 시작할께요.' ), server: SERVER } );
+                break;
+              }
+
+              func.oneSend( CLIENTS[ clientId ], { dalmuti: DALMUTI, server: SERVER } );
+            }
           }
-
-          func.oneSend( CLIENTS[ c ], { dalmuti: DALMUTI, server: SERVER } );
         }
       }
+
     },
 
     giveOneCard: function( id, client, SERVER ){

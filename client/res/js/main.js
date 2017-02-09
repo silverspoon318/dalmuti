@@ -21,6 +21,9 @@
     , MY = $( '#d_my' )
     , OTHER = $( '#d_other' )
     , IN_NAME = $( '#i_name' )
+    , IN_NEED_USER = $( '#i_need_user' )
+    , BTN_NEED_USER = $( '#btn_need_user' )
+    , BTN_NEW = $( '#btn_new' )
     , BTN_START = $( '#btn_start' );
 
   var wsFunc = {
@@ -36,6 +39,9 @@
         var data = JSON.parse( evt.data );
         console.clear();
         console.log( data );
+
+        if( data.isRefresh )
+          location.reload();
 
         func.show( data );
       };
@@ -107,6 +113,8 @@
          CONNECT.find( '#s_need_user' ).html( '<b>' + server.needUser + '명</b>' );
        }
 
+       IN_NEED_USER.val( server.needUser );
+
        if( server.names[ server.my ] ){
          func.viewGame( server );
          return false;
@@ -163,7 +171,7 @@
               }
             });
           })
-          .append( $( '<img />' ).attr( 'src', 'img/g_' + mycard[ m ].grade + '.jpg' ) );
+          .append( $( '<img />' ).attr( 'src', 'img/card/g_' + mycard[ m ].grade + '.jpg' ) );
 
         MY.append( card );
       }
@@ -171,12 +179,12 @@
 
       MY.append(
         $( '<div />' ).attr( 'class', 'button' ).append(
-          $( '<button />' ).attr( 'class', 'btn' ).text( '카드 내기' ).click( function(){
+          $( '<button />' ).attr( 'class', 'btn' ).html( '<b>카드 내기</b>' ).click( function(){
             wsFunc.sendMsg({ step: 2, user: server.my.sessionId, card: window.dalmuti.cardUp });
             window.dalmuti.cardUp = [];
           })
         ).append(
-          $( '<button />' ).attr( 'class', 'btn' ).text( '패스' ).click( function(){
+          $( '<button />' ).attr( 'class', 'btn' ).html( '<b>패스</b>' ).click( function(){
             wsFunc.sendMsg({ step: 3, user: server.my.sessionId });
             window.dalmuti.cardUp = [];
           })
@@ -185,7 +193,22 @@
     },
 
     action: function(){
-      BTN_START.click( function(){
+      BTN_NEED_USER.click(function(){
+        wsFunc.sendMsg({ step: 102, needUser: IN_NEED_USER.val() });
+        location.reload();
+      });
+
+      BTN_NEW.click(function(){
+        wsFunc.sendMsg({ step: 101 });
+        location.reload();
+      });
+
+      BTN_START.click(function(){
+        if( IN_NAME.val() == '' ){
+          alert( '이름을 누군지 잘~ 알 수 있도록 입력해 주세요.' ); 
+          return;
+        }
+
         wsFunc.sendMsg({ step: 1, name: IN_NAME.val() });
       });
     }

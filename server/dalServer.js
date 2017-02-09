@@ -32,12 +32,26 @@ wss.on( 'connection', function( ws ){
 
             mainSvc.start( CLIENTS, SERVER, cookies.sessionId );
           }
-        break; 
+        break;
         case 2:
           mainSvc.removeCard( CLIENTS, SERVER, data );
         break;
         case 3:
           mainSvc.pass( CLIENTS, SERVER, data );
+        break;
+
+        case 101:
+          SERVER = { readyLength: 0, needUser: SERVER.needUser, names: {}, my: null };
+          mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.getDalmuti(), server: SERVER, isRefresh: true } );
+          CLIENTS = {};
+          mainSvc.init();
+        break;
+
+        case 102:
+          SERVER = { readyLength: 0, needUser: parseInt( data.needUser ), names: {}, my: null };
+          mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.getDalmuti(), server: SERVER, isRefresh: true } );
+          CLIENTS = {};
+          mainSvc.init();
         break;
       }
     } catch( e ){

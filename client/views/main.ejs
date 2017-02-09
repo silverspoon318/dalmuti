@@ -6,6 +6,18 @@
   <link rel="stylesheet" type="text/css" href="css/main.css" />
 </head>
 <body>
+  <nav>
+    <div class="setting">
+      <div class="menu">
+        <input id="i_need_user" type="text" />
+        <button id="btn_need_user"><b><img src="img/icon/person.png" />필요 인원</b></button> 
+      </div>
+      <div class="menu"> <span>|</span> </div>
+      <div class="menu">
+        <button id="btn_new"><b><img src="img/icon/new_game.png" />새 게임</b></button> 
+      </div>
+    </div> 
+  </nav>
   <div id="d_connect" class="connect">
     <div class="box">
       <p class="title"><b>Dalmuti</b></p>
@@ -22,6 +34,25 @@
       <p>
         <ul id="u_connect_user"></ul>
       </p>
+    </div>
+    <div class="desc">
+      <h3 class="text-red"><b>규칙</b></h3>
+      <p><b><small><span class="text-red">1. 승리 조건</span> : 자기가 가지고 있는 카드를 모두 내면 승리합니다.</small></b></p>
+      <p><b><small><span class="text-red">2. 카드</span> : 등급은 1~12까지 존재하며 각 등급의 수만큼 카드가 존재 합니다. 1은 1장, 2는 2장, 3은 3장...<br />
+        또한 조커 카드가 2장 존재하며, 조커는 아무 숫자와 조합하여 낼 수 있습니다. <br />
+        다만 조커 카드만 낼 수는 없습니다. 
+      </small></b></p>
+      <p><b><small><span class="text-red">3. 카드 내기 조건</span> : 앞서서 낸 카드의 등급 숫자보다 작아야 하며, 수량이 동일해야 합니다.<br />
+        ex) 12 - 4. 12를 4장 낸거죠. 그럼 내 차례에는 11 - 4 부터 카드를 낼 수 있습니다. <br />
+        11 - 4, 10 - 4, 9 - 4 ...
+      </small></b></p>
+      <p><b><small><span class="text-red">4. 왕의 조건 (선)</span> : 카드를 마지막으로 낸 사람이 왕입니다. 선인거죠. <br />
+        왕이 된 사람이 카드를 낸 후 모두의 차례를 돌고, 다시 자기 차례가 된 경우 왕은 <br />
+        아무 카드 조합이나 새로 낼 수 있습니다.</small></b></p>
+      <p><b><small><span class="text-red">5. 패스</span> : 왕(마지막 낸 사람)의 카드 보다 작은 숫자, 동일 수량의 카드를 낼 수 없으면 패스를 해야 합니다.<br />
+        패스를 하면 자기가 왕이 될 기회를 놓치는 거죠.
+      </small></b></p>
+      <p><b><small>@ 한판 해보시면 알거에요. 아주 간단해요 ^^</small></b></p>
     </div>
   </div>
   <div id="d_game" class="game">
