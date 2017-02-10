@@ -16,12 +16,14 @@
     , GAME = $( '#d_game' ) 
     , RESULT = $( '#d_result' ).find( 'pre' )
     , USERS = $( '#d_users' ).find( 'pre' )
-    , WINNER = $( '#d_winner' ).hide().find( 'pre' )
+    , WINNER = $( '#d_winner' ).find( 'pre' )
     , FLOOR = $( '#d_floor' )
     , MY = $( '#d_my' )
-    , OTHER = $( '#d_other' )
+    , CHAT = $( '#d_chat' )
+    , DIV_CHAT_MSG = CHAT.find( '#d_msg' )
     , IN_NAME = $( '#i_name' )
     , IN_NEED_USER = $( '#i_need_user' )
+    , IN_CHAT_MSG = $( '#i_chat_msg' )
     , BTN_NEED_USER = $( '#btn_need_user' )
     , BTN_NEW = $( '#btn_new' )
     , BTN_START = $( '#btn_start' );
@@ -39,6 +41,18 @@
         var data = JSON.parse( evt.data );
         console.clear();
         console.log( data );
+
+        if( data.chatMsg ){
+          IN_CHAT_MSG.val( '' );
+
+          if( data.userName == data.server.names[ data.server.my.sessionId ] )
+            DIV_CHAT_MSG.append( '&nbsp;<small class="float-right text-red">'+ data.chatMsg + '&nbsp;</small><br />' );
+          else
+            DIV_CHAT_MSG.append( '&nbsp;<small><b>' + data.userName + '</b> : ' + data.chatMsg + '</small><br />' );
+
+          DIV_CHAT_MSG.scrollTop( DIV_CHAT_MSG.prop( 'scrollHeight' ) );
+          return;
+        }
 
         if( data.isDeny ){
           alert( data.dalmuti.msg );
@@ -81,9 +95,10 @@
 
       USERS.append( '왕인 유저 : ' + server.names[ dalmuti.kingUser ] + '\n' );
       USERS.append( '현재 유저 : ' + server.names[ dalmuti.turnUser ] + '\n\n' );
+      USERS.append( '\n\n' );
       if( dalmuti.users ){
         for( var d in dalmuti.users ){
-          USERS.append( '유저 ' + server.names[ d ] + ' 남은 카드수 : ' + dalmuti.users[ d ].length + '\n\n' );
+          USERS.append( '유저 "' + server.names[ d ] + '" 남은 카드수 : ' + dalmuti.users[ d ].length + '\n\n' );
         }
       }
 
@@ -103,6 +118,9 @@
        var server = data.server
          , dalmuti = data.dalmuti;
 
+       if( server.names[ server.my.sessionId ] )
+         CHAT.show();
+
        if( dalmuti.gameStatus >= 1 && server.names[ server.my.sessionId ] ){
          func.viewGame();
          func.info( server, dalmuti );
@@ -120,11 +138,6 @@
 
        IN_NEED_USER.val( server.needUser );
 
-       if( server.names[ server.my ] ){
-         func.viewGame( server );
-         return false;
-       }
-
        uConnectUser.empty();
        for( var n in server.names )
          uConnectUser.append( '<li><b>' + server.names[ n ] + '</b></li>' );
@@ -137,7 +150,6 @@
 
     viewCard: function( server, dalmuti ){
       MY.empty();
-      OTHER.empty();
       FLOOR.html( '<b>바닥 카드 : ' + dalmuti.floorCard.grade + ' - ' + dalmuti.floorCard.count + '</b>' );
 
       var mycard = dalmuti.mycard;
@@ -215,6 +227,14 @@
         }
 
         wsFunc.sendMsg({ step: 1, name: IN_NAME.val() });
+      });
+
+      IN_CHAT_MSG.keypress(function( e ){
+        if( e.which == 13 ){
+          var msg = IN_CHAT_MSG.val();
+        
+          wsFunc.sendMsg({ step: 201, msg: msg });
+        }
       });
     }
   };

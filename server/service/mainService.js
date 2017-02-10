@@ -183,6 +183,7 @@
                 DALMUTI.users[ data.user ].splice( k, 1 );
 
                 if( Object.keys( userCard ).length == 0 ){
+                  DALMUTI.floorCard = { grade: cd.grade, count: parseInt( c ) +1 };
                   func.finish( CLIENTS, SERVER, data );
                   return false;
                 }

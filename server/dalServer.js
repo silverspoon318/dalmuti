@@ -53,16 +53,20 @@ wss.on( 'connection', function( ws ){
           CLIENTS = {};
           mainSvc.init();
         break;
-
         case 102:
           SERVER = { readyLength: 0, needUser: parseInt( data.needUser ), names: {}, my: null };
           mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.getDalmuti(), server: SERVER, isRefresh: true } );
           CLIENTS = {};
           mainSvc.init();
         break;
+
+        case 201:
+          mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.getDalmuti(), server: SERVER, chatMsg: data.msg, userName: SERVER.names[ cookies.sessionId ] } );
+        break;
       }
     } catch( e ){
-      mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.addMsg( e.getMessage() ), server: SERVER } );
+
+      mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.addMsg( e ), server: SERVER } );
     }
   });
 });
