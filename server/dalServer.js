@@ -4,7 +4,7 @@ var WebSocket = require( 'ws' )
   , mainSvc = require( './service/mainService' )( WebSocket );
 
 var CLIENTS = {};
-var SERVER = { readyLength: 0, needUser: 4, names: {}, my: null };
+var SERVER = { readyLength: 0, needUser: 4, names: {}, my: null, master: null };
 mainSvc.init();
 
 wss.on( 'connection', function( ws ){
@@ -21,10 +21,10 @@ wss.on( 'connection', function( ws ){
 
     try{
       switch( parseInt( data.step ) ){
-        case 0:
+        case 0: // game init.
           mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.getDalmuti(), server: SERVER } );
         break;
-        case 1:
+        case 1: // game start.
           var DALMUTI = mainSvc.getDalmuti();
 
           if( DALMUTI.gameStatus == 1 ){
@@ -33,6 +33,9 @@ wss.on( 'connection', function( ws ){
           }
 
           if( cookies.sessionId !== undefined ){
+            if( SERVER.master === null )
+              SERVER.master = cookies.sessionId; 
+
             CLIENTS[ cookies.sessionId ].ready = 1;
             SERVER.readyLength++;
             SERVER.names[ cookies.sessionId ] = data.name;
@@ -40,27 +43,43 @@ wss.on( 'connection', function( ws ){
             mainSvc.start( CLIENTS, SERVER, cookies.sessionId );
           }
         break;
-        case 2:
+        case 2: // card remove.
           mainSvc.removeCard( CLIENTS, SERVER, data );
         break;
-        case 3:
+        case 3: // pass.
           mainSvc.pass( CLIENTS, SERVER, data );
         break;
 
-        case 101:
-          SERVER = { readyLength: 0, needUser: SERVER.needUser, names: {}, my: null };
+        case 101: // new game
+          if( SERVER.master !== null && SERVER.master != cookies.sessionId ){
+            mainSvc.oneSend( ws, { dalmuti: mainSvc.addMsg( '마스터가 아닙니다.' ), server: SERVER, isDeny: true } );
+            return;
+          }
+          
+          SERVER = { readyLength: 0, needUser: SERVER.needUser, names: {}, my: null, master: null };
           mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.getDalmuti(), server: SERVER, isRefresh: true } );
           CLIENTS = {};
           mainSvc.init();
         break;
-        case 102:
-          SERVER = { readyLength: 0, needUser: parseInt( data.needUser ), names: {}, my: null };
+        case 102: // change need user.
+          if( SERVER.master !== null && SERVER.master != cookies.sessionId ){
+            mainSvc.oneSend( ws, { dalmuti: mainSvc.addMsg( '마스터가 아닙니다.' ), server: SERVER, isDeny: true } );
+            return;
+          }
+
+          var DALMUTI = mainSvc.getDalmuti();
+
+          if( DALMUTI.gameStatus == 1 ){
+            mainSvc.oneSend( ws, { dalmuti: mainSvc.addMsg( '다른 게임 실행 중입니다.' ), server: SERVER, isDeny: true } );
+            return;
+          }
+
+          SERVER.needUser = parseInt( data.needUser );
           mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.getDalmuti(), server: SERVER, isRefresh: true } );
-          CLIENTS = {};
-          mainSvc.init();
+          mainSvc.start( CLIENTS, SERVER, cookies.sessionId );
         break;
 
-        case 201:
+        case 201: // chatting.
           mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.getDalmuti(), server: SERVER, chatMsg: data.msg, userName: SERVER.names[ cookies.sessionId ] } );
         break;
       }
