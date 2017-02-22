@@ -1,0 +1,360 @@
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>game - Great Dalmuti</title>
+<link rel="stylesheet" type="text/css" href="resource/css/style.css">
+<script src="http://static.four33.co.kr/event/common/js/jquery-1.8.1.min.js"></script>
+</head>
+<body>
+
+<div id="fWrap" class="status-lobby">
+
+  <div id="contents">
+
+    <div id="lobby">
+      <div class="wrap_lobby">
+        <div id="gameInfo">
+          <h1 id="titleDalmuti"><img src="resource/images/tit-dalmuti.png" alt="달무티"></h1>
+          <div class="notice">
+            <strong>달무티에 오신 것을 환영 합니다.</strong>
+          </div>
+        </div>
+        <div id="userInfo">
+          <h2 class="tit">Players</h2>
+          <span class="user_num">
+            <span class="now"></span> / <span class="max"></span>
+          </span>
+          <div class="user_list">
+            <!--
+            <div class="player">
+              <span class="bu"></span>
+              <span class="name">플레이어</span>
+            </div>
+            <div>
+              <span class="bu"></span>
+              <span class="name">유저1</span>
+            </div>
+            <div>
+              <span class="bu"></span>
+              <span class="name">유저1</span>
+            </div>
+            <div>
+              <span class="bu"></span>
+              <span class="name">유저1</span>
+            </div>
+            -->
+          </div>
+        </div>
+        <div class="loading">
+          <div class="loading-bar"><span></span></div>
+          <div class="msg">참여자를 기다리고 있습니다...</div>
+        </div>
+      </div>
+      <div class="btn_area">
+        <button class="btn_add" type="button">사용자 추가</button>
+        <button class="btn_start" type="button">시작</button>
+      </div>
+      <div class="inp_user">
+        <input class="inp_nick" type="text" placeholder="사용자의 이름을 입력해주세요.">
+        <button class="btn_nick" type="button">등록</button>
+      </div>
+      <div id="chat" class="chat">
+        <div class="wrap_chat">
+          <div class="msg_area">
+            <div>
+              <span class="name">뿡뿡</span>
+              <span class="text">안녕하세요</span>
+            </div>
+            <div class="player">
+              <span class="name">12312312323</span>
+              <span class="text">안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요</span>
+            </div>
+          </div>
+          <div class="inp_area">
+            <input type="text" class="inp_chat">
+            <button class="btn_chat" type="button">전송</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- // #lobby(대기실) -->
+
+    <div id="game">
+      <div class="wrap_game">
+
+        <div class="notice">
+          <div class="msg"></div>
+        </div>
+        <!-- // .notice(게임관련 메시지, 공지) -->
+
+        <div id="cardSlot">
+          <div class="wrap_slot">
+            <!-- 낸 카드의 정보 -->
+            <div class="card_data">
+              <div class="card">
+                <div class="wrap_card">
+                  <span class="front">
+                    <span class="num"></span>
+                  </span>
+                  <span class="back"></span>
+                </div>
+              </div>
+              <!-- 낸 카드의 장수 -->
+              <div class="count">
+                X <span class="val">12</span>
+              </div>
+            </div>
+            <!-- 게임 정보 -->
+            <div class="game_data">
+              <ul>
+                <li class="turn">
+                  <strong class="tit">TURN</strong>
+                  <span class="now">2</span> / <span class="max">8</span>
+                </li>
+                <li class="turn_user">
+                  <strong class="tit">TURN-USER</strong>
+                  <span class="val">AAAA</span>
+                </li>
+                <li class="last_user">
+                  <strong class="tit">LAST-USER</strong>
+                  <span class="val">뿡뿡뿡</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+        <!-- // #cardSlot(낸 카드 정보) -->
+
+        <div id="chat2" class="chat">
+          <div class="wrap_chat">
+            <div class="msg_area">
+              <div>
+                <span class="name">뿡뿡</span>
+                <span class="text">안녕하세요</span>
+              </div>
+              <div class="player">
+                <span class="name">12312312323</span>
+                <span class="text">안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요</span>
+              </div>
+            </div>
+            <div class="inp_area">
+              <input type="text" class="inp_chat">
+              <button class="btn_chat" type="button">전송</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="userList">
+          <!-- 턴을 맞은 사용자 .turn / 플레이어 .player / 마지막 카드를 낸사람 .lead -->
+          <ul>
+            <!--
+            <li class="active">
+              <span class="icons"></span>
+              <span class="name"></span>
+              <span class="remain_card"></span>
+            </li>
+            -->
+          </ul>
+        </div>
+        <!-- // #rivalInfo(참여자 정보) -->
+
+        <div id="playerInfo">
+          <div class="player_menu">
+            <div class="wrap_menu">
+              <div class="my_info">
+                <!--
+                <span class="turn">
+                  <span class="tit">나의 턴: </span>
+                  <span class="val"></span>
+                </span>
+                -->
+                <span class="name">
+                  <span class="val">이름</span>
+                </span>
+                <span class="remain_card">
+                  <span class="val"></span>
+                </span>
+                <!--
+                <span class="select_card">
+                  <span class="tit">선택한 카드의 장수:</span>
+                  <span class="val"></span>장
+                </span>
+                -->
+                <div class="msg">
+                  <span class="val"></span>
+                </div>
+              </div>
+              <div class="btn_area">
+                <button class="btn_send" type="button" title="카드내기"></button>
+                <button class="btn_pass" type="button" title="패스하기"></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card_set">
+            <!--
+            <div class="card type0">
+              <div class="wrap_card">
+                <span class="front"></span>
+                <span class="back">
+                  <span class="num"></span>
+                </span>
+              </div>
+            </div>
+            -->
+          </div>
+          <!-- // .card_set -->
+
+          <div class="btn_master">
+            <button class="btn_reset" type="button">재시작</button>
+          </div>
+
+        </div>
+        <!-- // #playerArea(플레이어(자신) 카드, 정보) -->
+
+      </div>
+      <!-- // .wrap_game -->
+    </div>
+    <!-- // #game(게임화면) -->
+
+    <div id="result">
+      <div class="wrap_result">
+        <div class="ranking">
+          <div class="tit">게임이 종료되었습니다.</div>
+          <ul></ul>
+        </div>
+        <!-- .ranking -->
+        <div class="btn_area">
+          <button class="btn_new" type="button">새로하기</button>
+          <!--<button class="btn_restart" type="button">다시하기</button>-->
+        </div>
+      </div>
+      <div class="bg"></div>
+    </div>
+    <!-- // #result(결과화면) -->
+
+  </div>
+  <!-- // #contents -->
+
+  <div id="bgSet">
+    <div class="bg_lobby"></div>
+    <div class="bg_game"></div>
+    <div class="bg_result"></div>
+  </div>
+
+</div>
+<!-- // #fWrap -->
+
+<script src="resource/js/script.js"></script>
+<script>
+// 테스트
+var test = {
+  "dalmuti": {
+    "gameStatus": 0, // 게임 상태. {0:중지, 1:시작}
+    "grade": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], // 기본 데이터.
+    "card": [], // 기본 데이터.
+    "perCard": 1, // 기본 데이터.
+    "users": { // 유저별 데이터. 유저 세션 id를 키로, array 형태 안에 각 object로 카드 정보 확인.
+      "eyJpZCI6Mzh9": [{
+        /* 카드 총 80장에 대해 1~80까지 각각 id부여, 해당 카드의 등급 정보. */
+        "id": 41,
+        "grade": 9
+      }, {
+        "id": 22,
+        "grade": 6
+      }],
+      "eyJpZCI6Mzl9": [{
+        "id": 44,
+        "grade": 9
+      }, {
+        "id": 33,
+        "grade": 8
+      }, {
+        "id": 5,
+        "grade": 2
+      }]
+    },
+    "turn": 1, // 전체 유저 중 몇번째 turn인지. ex) users 가 5명이면 그 중 index=1.
+    "floorCard": { // 현재 바닥의 카드.
+      "grade": 12,
+      "count": 4,
+      "isAnything": false // 왕인 유저가 나머지 사람들이 다 패스를 해서 다시 자기차례 왔을때, 새로 아무거나 낼 수 있는지 여부.
+    },
+    "kingUser": "eyJpZCI6Mzh9", // 왕인 유저 세션 ID.
+    "winner": ["eyJpZCI6Mzh9", "eyJpZCI6Mzl9"], // 이긴 유저 리스트.
+    "msg": null, // 서버쪽 메세지. ex) 자기 차례가 아닙니다, 동일한 등급 카드만 내세요 등...
+    "mycard": [{ // 내 카드 정보.
+      "id": 41,
+      "grade": 9
+    }, {
+      "id": 22,
+      "grade": 6
+    }, {
+      "id": 8,
+      "grade": 3
+    }],
+    "turnUser": "eyJpZCI6Mzh9" // 현재 차례인 유저.
+  },
+  "server": { // 서버 정보
+    "readyLength": 2, // 게임 참가 대기중인 유저 수.
+    "needUser": 3, // 게임 참여 필요 인원 수.
+    "names": { // 현재 서버에 참가 대기중인 유저 정보.
+      "eyJpZCI6Mzh9": "a",
+      "eyJpZCI6Mzl9": "b"
+    },
+    "my": { // 내 정보.
+      "sessionId": "eyJpZCI6Mzh9"
+    },
+    "master": "eyJpZCI6Mzh9"
+  },
+  "chatMsg": "sdfdsfsdf",
+  "userName": "a"
+};
+
+var uiSet = new dalmutiUI(test);
+
+// 테스트(향후 삭제)
+$('#lobby .btn_area button').on('click', function(){
+  var btnType = ( $(this).hasClass('btn_start') ) ? 'start' : 'add';
+
+  if ( btnType == 'add' ){
+    test.dalmuti.users['testestest'] = [{
+      "id": 44,
+      "grade": 9
+    }, {
+      "id": 33,
+      "grade": 8
+    }, {
+      "id": 5,
+      "grade": 2
+    }];
+    test.server.names['testestest'] = 'cc';
+    test.server.readyLength = 3;
+    dalmutiUI(test);
+  }else{
+    test.dalmuti.turnUser = test.server.my.sessionId;
+    test.dalmuti.gameStatus = 1;
+    dalmutiUI(test);
+  }
+});
+
+// game test
+$('#game .btn_send').on('click', function () {
+  test.dalmuti.turnUser = test.server.my.sessionId;
+  dalmutiUI(test);
+});
+
+// result test
+$('#game .btn_pass').on('click', function () {
+  test.dalmuti.gameStatus = 2;
+  dalmutiUI(test);
+});
+
+uiSet.layoutSet.chat(test);
+test.chatMsg = 'sdfdsfsdf';
+test.userName = 'b';
+uiSet.layoutSet.chat(test);
+
+</script>
+</body>
+</html>
