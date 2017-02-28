@@ -12,6 +12,7 @@
     , divGame = $( '#d_game' );
 
   var BODY = $( 'body' ) 
+    , NAV = $( 'nav' ).hide()
     , CONNECT = $( '#d_connect' ) 
     , GAME = $( '#d_game' ) 
     , RESULT = $( '#d_result' ).find( 'pre' )
@@ -54,9 +55,14 @@
           return;
         }
 
+        if( data.server.master === null || data.server.my.sessionId == data.server.master )
+          NAV.show();
+        else
+          NAV.hide();
+
         if( data.isDeny ){
           alert( data.dalmuti.msg );
-          return;
+          return false;
         }
 
         if( data.isRefresh )
@@ -93,8 +99,8 @@
           RESULT.append( '다시 왕이 되어서, 새로운 조합의 카드를 낼 수 있어요\n\n' );
       }
 
-      USERS.append( '왕인 유저 : ' + server.names[ dalmuti.kingUser ] + '\n' );
-      USERS.append( '현재 유저 : ' + server.names[ dalmuti.turnUser ] + '\n\n' );
+      USERS.append( '왕인 유저 : <b class="text-red">' + server.names[ dalmuti.kingUser ] + '</b>\n' );
+      USERS.append( '현재 유저 : <b class="text-red">' + server.names[ dalmuti.turnUser ] + '</b>\n\n' );
       USERS.append( '\n\n' );
       if( dalmuti.users ){
         for( var d in dalmuti.users ){
@@ -150,7 +156,7 @@
 
     viewCard: function( server, dalmuti ){
       MY.empty();
-      FLOOR.html( '<b>바닥 카드 : ' + dalmuti.floorCard.grade + ' - ' + dalmuti.floorCard.count + '</b>' );
+      FLOOR.html( '<b>바닥 카드 : ' + dalmuti.floorCard.grade + ' x' + dalmuti.floorCard.count + '장</b>' );
 
       var mycard = dalmuti.mycard;
       mycard = _.sortBy( mycard, 'grade' );
@@ -163,7 +169,7 @@
           $( '<div />' )
           .attr( 'class', 'card' )
           .data({ id: mycard[ m ].id, grade: mycard[ m ].grade })
-          .click( function(){
+          .click(function(){
             var oThis = $( this )
               , cls = oThis.attr( 'class' )
               , id = oThis.data( 'id' )
@@ -212,12 +218,10 @@
     action: function(){
       BTN_NEED_USER.click(function(){
         wsFunc.sendMsg({ step: 102, needUser: IN_NEED_USER.val() });
-        location.reload();
       });
 
       BTN_NEW.click(function(){
         wsFunc.sendMsg({ step: 101 });
-        location.reload();
       });
 
       BTN_START.click(function(){
@@ -230,11 +234,8 @@
       });
 
       IN_CHAT_MSG.keypress(function( e ){
-        if( e.which == 13 ){
-          var msg = IN_CHAT_MSG.val();
-        
-          wsFunc.sendMsg({ step: 201, msg: msg });
-        }
+        if( e.which == 13 )
+          wsFunc.sendMsg({ step: 201, msg: IN_CHAT_MSG.val() });
       });
     }
   };
