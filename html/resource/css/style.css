@@ -156,7 +156,7 @@ Animate the stripes
 #userList li .wrap_list{display:table-cell;vertical-align:middle}
 #userList li .wrap_list span{height:16px;color:#ccc;font-size:12px;line-height:16px;vertical-align:middle}
 #userList li .icons{position:absolute;left:0;top:0;width:3px;height:28px !important;border-right:1px solid #282c2e;font-size:0;background:#fff}
-#userList li .name{float:left;width:125px;padding:0 10px 0 14px}
+#userList li .name{float:left;width:120px;padding:0 10px 0 14px}
 #userList li .remain_card{float:right;width:15px;height:16px;padding-left:25px;margin-right:10px;text-align:center;background:url(../images/icon-card.png) left center no-repeat;background-size:auto 16px}
 #userList li .remain_card .icon{}
 

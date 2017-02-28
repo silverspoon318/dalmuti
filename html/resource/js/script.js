@@ -82,15 +82,89 @@ var dalmutiUI = function (data) {
         $(myData.elements.msg).html(str);
       }
     },
-    chat: function(data){
+    chat: function(data){   // 채팅
       var name = data.userName,
         msg = data.chatMsg,
         isPlayer = ( name === myData.name ) ? 'player' : '';
-      console.log(myData.name)
       var chatEle = '<div class="'+isPlayer+'"><span class="name">'+name+'</span><span class="msg">'+msg+'</span></div>';
+
       $('.chat .msg_area').append(chatEle);
     },
-    lobbySet: function() {
+    myDataSet: function (flip) {  // 사용자 영역 정보 출력(내 이름, 남은 턴, 카드목록)
+      // player dataSet
+      var remainCard = Object.keys(myData.cardList).length;
+      $(myData.elements.remain).text(remainCard);
+      $(myData.elements.name).text(myData.name);
+
+      // cardSet
+      $(myData.elements.cardSet).empty();
+      $(myData.cardList).each(function (idx) {
+        var cardGrade = myData.cardList[idx].grade,
+          cardId = myData.cardList[idx].id,
+          isFlip = (flip !== undefined) ? flip : '';
+
+        var cardEle = '<div class="card '+isFlip+' type'+cardGrade+'" data-id="'+cardId+'"><div class="wrap_card"><span class="front"></span><span class="back"><span class="num">'+cardGrade+'</span></span></div></div>';
+        $(myData.elements.cardSet).append(cardEle);
+      });
+
+      // check myTurn
+      if (myData.id == userData.turnUser) {
+        $(myData.elements.wrap).addClass('turn');
+        layoutSet.msg('당신의 턴 입니다.');
+      }else{
+        $(myData.elements.wrap).removeClass('turn');
+        layoutSet.msg('');
+      }
+
+    },
+    userListSet: function () {  // 참여자 정보 출력
+      $(userData.elements.gameWrap).find('ul').empty();
+      for (var key in userData.info) {
+        var remainCard = userData.list[key].length,
+          userName = userData.list[key],
+          startUser = ( key === userData.turnUser ) ? 'turn' : '',
+          target = $(userData.elements.gameWrap).find('ul'),
+          isPlayer = ( myData.id === key ) ? 'player' : '',
+          rank = ( $.inArray(key, userData.winner) !== -1 ) ? 'rank'+ ($.inArray(key, userData.winner)+1) : '',
+          userEle = '<li class="'+ rank +' ' + isPlayer + ' ' + startUser + '" data-id="' + key + '">' +
+            '<div class="wrap_list">' +
+            '<span class="icons"><span class="icon_lead"></span><span class="icon_player"></span><span class="icon_rank"></span></span>' +
+            '<span class="name">' + userName + '</span>' +
+            '<span class="remain_card"><span class="val">' + remainCard + '</span></span>' +
+            '</div>' +
+            '</li>';
+        $(target).append(userEle);
+      }
+    },
+    cardSlotSet: function () {    // 카드 슬롯 정보 출력(내야하는 카드, 현재 턴, 턴 유저이름, 마지막 카드낸 유저 이름)
+      // add game data
+      var turnUser = data.server.names[userData.turnUser],
+        lastUser = data.server.names[userData.lastUser],
+        cardNum = 'type'+slotData.grade,
+        cardCount = (slotData.count == 0) ? '' : slotData.count,
+        cardEle = '<div class="card flip '+cardNum+'">'+
+          '<div class="wrap_card">'+
+          '<span class="front">'+
+          '<span class="num"></span>'+
+          '</span>'+
+          '<span class="back"></span>'+
+          '</div>'+
+          '</div>'+
+          '<div class="count">'+
+          'X <span class="val">12</span>'+
+          '</div>';
+
+      // cardSlotSet
+      $(slotData.elements.wrap).empty().append(cardEle);
+      $(slotData.elements.count).empty().text(cardCount);
+
+      // setGameInfo
+      $(userData.elements.turnNow).text(userData.turnNum);
+      $(userData.elements.turnMax).text(userData.max);
+      $(userData.elements.turnUser).text(turnUser);
+      $(userData.elements.lastUser).text(lastUser);
+    },
+    lobbySet: function () {
       // 로비 셋팅
       $( lobbyData.elements.userList ).empty();
       for (var key in userData.info){
@@ -116,7 +190,6 @@ var dalmutiUI = function (data) {
           $('#lobby .inp_user').hide();
         }
       });
-
     },
     tableSet: function(){
       // 게임 초기시작
@@ -124,75 +197,38 @@ var dalmutiUI = function (data) {
         playerCardList = data.dalmuti.mycard,
         flipIdx = 0,
         flipAni = function (idx) {
-        var isLastCard = (idx - 1 == $(playerCardList).length) ? true : false;
-        setTimeout(function(){
-          if ( !isLastCard ) {
-            $(playerCardEle).children('.card').eq(idx).toggleClass('flip');
-            flipIdx++;
-            flipAni(flipIdx);
-          }else{
-            $(playerCardEle).children('.card').on('click', function(){
-              var currentCard = $(playerCardEle).find('.selected'),
-                currentNum = ( currentCard.length > 0 ) ? $(currentCard).eq(0).find('.num').text() : null,
-                selectNum = $(this).find('.num').text();
+          var isLastCard = (idx - 1 == $(playerCardList).length) ? true : false;
+          setTimeout(function(){
+            if ( !isLastCard ) {
+              $(playerCardEle).children('.card').eq(idx).toggleClass('flip');
+              flipIdx++;
+              flipAni(flipIdx);
+            }else{
+              $(playerCardEle).on('click', '.card', function(){
+                var currentCard = $(playerCardEle).find('.selected'),
+                  currentNum = ( currentCard.length > 0 ) ? $(currentCard).eq(0).find('.num').text() : null,
+                  selectNum = $(this).find('.num').text();
 
-              if ( currentNum == null || currentNum == selectNum ){
-                $(this).toggleClass('selected');
-              }else{
-                layoutSet.msg('선택한 카드와 다른 카드입니다.');
-              }
-              $(myData.elements.selected).text($(playerCardEle).find('.selected').length);
-            });
-            return false
-          }
-        }, 300)
-      };
+                if ( currentNum == null || currentNum == selectNum ){
+                  $(this).toggleClass('selected');
+                }else{
+                  layoutSet.msg('선택한 카드와 다른 카드입니다.');
+                }
+                $(myData.elements.selected).text($(playerCardEle).find('.selected').length);
+              });
+              return false
+            }
+          }, 300)
+        };
 
       // hide lobby
       $('#fWrap').addClass('hide_lobby');
 
       // add user data
-      for (var key in userData.info) {
-        var remainCard = userData.list[key].length,
-          userName = userData.list[key],
-          startUser = ( key === userData.turnUser ) ? 'turn' : '',
-          target = $('#userList ul'),
-          isPlayer = ( myData.id === key ) ? 'player' : '',
-          userEle = '<li class="' + isPlayer + ' ' + startUser + '" data-id="' + key + '">' +
-            '<div class="wrap_list">' +
-            '<span class="icons"><span class="icon_lead"></span><span class="icon_player"></span><span class="icon_rank"></span></span>' +
-            '<span class="name">' + userName + '</span>' +
-            '<span class="remain_card"><span class="val">' + remainCard + '</span></span>' +
-            '</div>' +
-            '</li>';
-        $(target).append(userEle);
-      }
+      layoutSet.userListSet();
 
-      // add game data
-      (function(){
-        var turnUser = data.server.names[userData.turnUser],
-          lastUser = data.server.names[userData.lastUser];
-
-        // turnNum
-        $(userData.elements.turnNow).text(userData.turnNum);
-        $(userData.elements.turnMax).text(userData.max);
-        $(userData.elements.turnUser).text(turnUser);
-        $(userData.elements.lastUser).text(lastUser);
-      })();
-
-
-      // player data
-      var remainCard = Object.keys(myData.cardList).length;
-      $(myData.elements.remain).text(remainCard);
-      $(myData.elements.name).text(myData.name);
-
-      // addCard
-      $(playerCardList).each(function(idx, cardData){
-        var cardId = cardData.id,
-          cardGrade = cardData.grade,
-          cardEle = '<div class="card type'+cardGrade+'" data-id="'+cardId+'"><div class="wrap_card"><span class="front"></span><span class="back"><span class="num">'+cardGrade+'</span></span></div></div>';
-        $('#playerInfo .card_set').append(cardEle);
-      });
+      // myDataSet
+      layoutSet.myDataSet();
 
       // card flip ani
       setTimeout(function(){
@@ -204,38 +240,19 @@ var dalmutiUI = function (data) {
 
     },
     playSet: function() {
-      // 게임 중
-      // send animation
-      (function(){
-        $(myData.elements.selectedCard).addClass('send');
-        setTimeout(function(){
-          $(myData.elements.selectedCard).remove();
-        }, 500);
-      })();
 
-      // cardSlot set
-      (function(){
-        $(slotData.elements.card).removeClass('flip');
-        $(slotData.elements.count).addClass('hide');
-        setTimeout(function(){
-          $(slotData.elements.card).attr('class', 'card flip type'+slotData.grade+'');
-          $(slotData.elements.count).removeClass('hide').text(slotData.count);
-        }, 500);
-      })();
+      // cardSlotSet
+      layoutSet.cardSlotSet();
 
-      // game data set
-      (function(){
-        var turnUser = data.server.names[userData.turnUser],
-          lastUser = data.server.names[userData.lastUser];
+      // myCardSet
+      layoutSet.myDataSet('flip');
 
-        // turnNum
-        $(userData.elements.turnNow).text(userData.turnNum);
-        $(userData.elements.turnUser).text(turnUser);
-        $(userData.elements.lastUser).text(lastUser);
-      })();
+      // userListSet
+      layoutSet.userListSet();
 
       // user data set
       (function(){
+        return false
         var eleList = $(userData.elements.gameWrap),
           leadUser = $(eleList).find('li[data-id='+userData.lastUser+']'),
           turnUser =  $(eleList).find('li[data-id='+userData.turnUser+']');
@@ -252,14 +269,6 @@ var dalmutiUI = function (data) {
           });
         }
 
-        // check myTurn
-        if ( myData.id == userData.turn) {
-          $(myData.elements.wrap).addClass('turn');
-          layoutSet.msg('당신의 턴 입니다.');
-        }else{
-          $(myData.elements.wrap).removeClass('turn');
-          layoutSet.msg('');
-        }
       })();
 
       // playerInfo set
@@ -294,16 +303,9 @@ var dalmutiUI = function (data) {
     }else if ( uiStatus == 'status-game' ) {
       // 게임 중
       return this.layoutSet.playSet();
-      /*
-       [게임 중 변경되는 UI]
-       차례(유저, 플레이어)
-       남은 카드 수(유저)
-       내야할 카드와 장수
-       */
     }
   }else if ( gameStatus == 2 ) {
     // 게임 종료
     return this.layoutSet.resultSet();
   }
-
-}
+};
