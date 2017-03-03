@@ -32,6 +32,11 @@ wss.on( 'connection', function( ws ){
             return;
           }
 
+          if( SERVER.names[ cookies.sessionId ] ){
+            mainSvc.oneSend( ws, { dalmuti: mainSvc.addMsg( '이미 접속한 사용자 입니다.' ), server: SERVER, isDeny: true } );
+            return;
+          }
+
           if( cookies.sessionId !== undefined ){
             if( SERVER.master === null )
               SERVER.master = cookies.sessionId; 
