@@ -49,7 +49,6 @@
 
           DALMUTI.gameStatus = 1;
 
-          func.allSend( CLIENTS, { dalmuti: func.addMsg( '게임 시작합니다.' ), server: SERVER } );
           func.giveCard( CLIENTS, SERVER );
           return;
         }
@@ -83,8 +82,6 @@
                 func.allSend( CLIENTS, { dalmuti: func.addMsg( '카드 나눠주기 끝났습니다. 게임 시작할께요.' ), server: SERVER } );
                 break;
               }
-
-              func.oneSend( CLIENTS[ clientId ], { dalmuti: DALMUTI, server: SERVER } );
             }
           }
         }
@@ -103,7 +100,6 @@
           DALMUTI.users[ id ] = [];
 
         DALMUTI.users[ id ].push( card );
-        func.oneSend( client, { dalmuti: DALMUTI, server: SERVER } );
         return;
       }
 
@@ -114,7 +110,6 @@
 
           DALMUTI.card.splice( idx, 1 );
           DALMUTI.users[ id ].push( card );
-          func.oneSend( client, { dalmuti: DALMUTI, server: SERVER } );
           return;
         }
       }

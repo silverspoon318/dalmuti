@@ -109,15 +109,16 @@ var dalmutiUI = function (data) {
         $(myData.elements.cardSet).append(cardEle);
       });
 
+      this.turnCheck();
+    },
+    turnCheck: function(){
       // check myTurn
       if (myData.id == userData.turnUser) {
         $(myData.elements.wrap).addClass('turn');
         this.msg('당신의 턴 입니다.');
       }else{
         $(myData.elements.wrap).removeClass('turn');
-        this.msg('');
       }
-
     },
     userListSet: function () {  // 참여자 정보 출력
       $(userData.elements.gameWrap).find('ul').empty();
@@ -200,7 +201,7 @@ var dalmutiUI = function (data) {
         flipAni = function (idx) {
           var isLastCard = (idx - 1 == $(playerCardList).length) ? true : false;
           setTimeout(function(){
-            if ( !isLastCard ) {
+            if (!isLastCard) {
               $(playerCardEle).children('.card').eq(idx).toggleClass('flip');
               flipIdx++;
               flipAni(flipIdx);
@@ -217,7 +218,7 @@ var dalmutiUI = function (data) {
                 }
                 $(myData.elements.selected).text($(playerCardEle).find('.selected').length);
               });
-              return false
+              return false;
             }
           }, 300)
         };
@@ -235,9 +236,9 @@ var dalmutiUI = function (data) {
         $('#fWrap').attr('class', 'status-game');
         setTimeout(function(){
           flipAni(flipIdx);
-        }, 1400)
+          window.dalmuti.isFlip = true;
+        }, 1400);
       }, 1400);
-
     },
     playSet: function() {
       // cardSlotSet
@@ -266,7 +267,6 @@ var dalmutiUI = function (data) {
             $(eleList).find('li[data-id='+id+']').addClass(strRank);
           });
         }
-
       })();
 
       // playerInfo set

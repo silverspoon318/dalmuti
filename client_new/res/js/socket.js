@@ -42,6 +42,7 @@ $(function(){
     onMsg: function( data ){
       data.dalmuti.mycard = _.sortBy( data.dalmuti.mycard, 'grade' );
       window.dalmuti.data = data;
+      var uiSet = null; 
 
       if( data.isRefresh )
         location.reload();
@@ -51,24 +52,27 @@ $(function(){
         return;
       }
 
-      var uiSet = new dalmutiUI( data );
-
       if( data.server.names[ data.server.my.sessionId ] ){
         divPlayerAdd.hide();
         divChat.show();
       }
 
-      if( data.dalmuti.msg ){
-        uiSet.layoutSet.msg( data.dalmuti.msg );
-      }
+      if( !window.dalmuti.isFlip ){ 
+        uiSet = new dalmutiUI( data );
 
-      if( data.chatMsg ){
-        uiSet.layoutSet.chat( data );
-        divChat.find( '.msg_area' ).scrollTop( divChat.find( '.msg_area' ).prop( 'scrollHeight' ) );
-        divChat2.find( '.msg_area' ).scrollTop( divChat2.find( '.msg_area' ).prop( 'scrollHeight' ) );
-        inChatMsg.val( '' );
-        inChatMsg2.val( '' );
-        return;
+        if( data.dalmuti.msg )
+          uiSet.layoutSet.msg( data.dalmuti.msg );
+
+        uiSet.layoutSet.turnCheck();
+
+        if( data.chatMsg ){
+          uiSet.layoutSet.chat( data );
+          divChat.find( '.msg_area' ).scrollTop( divChat.find( '.msg_area' ).prop( 'scrollHeight' ) );
+          divChat2.find( '.msg_area' ).scrollTop( divChat2.find( '.msg_area' ).prop( 'scrollHeight' ) );
+          inChatMsg.val( '' );
+          inChatMsg2.val( '' );
+          return;
+        }
       }
     },
 
