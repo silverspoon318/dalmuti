@@ -1,0 +1,218 @@
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>game - Great Dalmuti</title>
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+<script src="/js/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="fWrap" class="status-lobby">
+
+  <div id="contents">
+
+    <div id="lobby">
+      <div class="wrap_lobby">
+        <div id="gameInfo">
+          <h1 id="titleDalmuti"><img src="/img/tit-dalmuti.png" alt="달무티"></h1>
+          <div class="notice">
+            <strong>달무티에 오신 것을 환영 합니다.</strong>
+          </div>
+        </div>
+        <div id="userInfo">
+          <h2 class="tit">Players</h2>
+          <span class="user_num">
+            <span class="now"></span> / <span class="max"></span>
+          </span>
+          <div class="user_list"></div>
+        </div>
+        <div class="loading">
+          <div class="loading-bar"><span></span></div>
+          <div class="msg">참여자를 기다리고 있습니다...</div>
+        </div>
+      </div>
+      <div id="d_player_add">
+        <div class="btn_area">
+          <button class="btn_add" type="button">사용자 추가</button>
+          <button class="btn_start" type="button">시작</button>
+        </div>
+        <div class="inp_user">
+          <input id="i_nick" class="inp_nick" type="text" placeholder="사용자의 이름을 입력해주세요.">
+          <button id="btn_join" class="btn_nick" type="button">등록</button>
+        </div>
+      </div>
+      <div id="chat" class="chat">
+        <div class="wrap_chat">
+          <div class="msg_area">
+          </div>
+          <div class="inp_area">
+            <input id="i_chat_msg" type="text" class="inp_chat">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- // #lobby(대기실) -->
+
+    <div id="game">
+      <div class="wrap_game">
+
+        <div class="notice">
+          <div class="msg"></div>
+        </div>
+        <!-- // .notice(게임관련 메시지, 공지) -->
+
+        <div id="cardSlot">
+          <div class="wrap_slot">
+            <!-- 낸 카드의 정보 -->
+            <div class="card_data">
+              <div class="card">
+                <div class="wrap_card">
+                  <span class="front">
+                    <span class="num"></span>
+                  </span>
+                  <span class="back"></span>
+                </div>
+              </div>
+              <!-- 낸 카드의 장수 -->
+              <div class="count">
+                X <span class="val">12</span>
+              </div>
+            </div>
+            <!-- 게임 정보 -->
+            <div class="game_data">
+              <ul>
+                <li class="turn">
+                  <strong class="tit">TURN</strong>
+                  <span class="now">2</span> / <span class="max">8</span>
+                </li>
+                <li class="turn_user">
+                  <strong class="tit">TURN-USER</strong>
+                  <span class="val">AAAA</span>
+                </li>
+                <li class="last_user">
+                  <strong class="tit">LAST-USER</strong>
+                  <span class="val">뿡뿡뿡</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+        <!-- // #cardSlot(낸 카드 정보) -->
+
+        <div id="chat2" class="chat">
+          <div class="wrap_chat">
+            <div class="msg_area">
+            </div>
+            <div class="inp_area">
+              <input id="i_chat_msg2" type="text" class="inp_chat">
+              <button class="btn_chat" type="button">전송</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="userList">
+          <!-- 턴을 맞은 사용자 .turn / 플레이어 .player / 마지막 카드를 낸사람 .lead -->
+          <ul>
+            <!--
+            <li class="active">
+              <span class="icons"></span>
+              <span class="name"></span>
+              <span class="remain_card"></span>
+            </li>
+            -->
+          </ul>
+        </div>
+        <!-- // #rivalInfo(참여자 정보) -->
+
+        <div id="playerInfo">
+          <div class="player_menu">
+            <div class="wrap_menu">
+              <div class="my_info">
+                <!--
+                <span class="turn">
+                  <span class="tit">나의 턴: </span>
+                  <span class="val"></span>
+                </span>
+                -->
+                <span class="name">
+                  <span class="val">이름</span>
+                </span>
+                <span class="remain_card">
+                  <span class="val"></span>
+                </span>
+                <!--
+                <span class="select_card">
+                  <span class="tit">선택한 카드의 장수:</span>
+                  <span class="val"></span>장
+                </span>
+                -->
+                <div class="msg">
+                  <span class="val"></span>
+                </div>
+              </div>
+              <div class="btn_area">
+                <button id="btn_send" class="btn_send" type="button" title="카드내기"></button>
+                <button id="btn_pass" class="btn_pass" type="button" title="패스하기"></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card_set">
+            <!--
+            <div class="card type0">
+              <div class="wrap_card">
+                <span class="front"></span>
+                <span class="back">
+                  <span class="num"></span>
+                </span>
+              </div>
+            </div>
+            -->
+          </div>
+          <!-- // .card_set -->
+
+          <div class="btn_master">
+            <button class="btn_reset" type="button">재시작</button>
+          </div>
+
+        </div>
+        <!-- // #playerArea(플레이어(자신) 카드, 정보) -->
+
+      </div>
+      <!-- // .wrap_game -->
+    </div>
+    <!-- // #game(게임화면) -->
+
+    <div id="result">
+      <div class="wrap_result">
+        <div class="ranking">
+          <div class="tit">게임이 종료되었습니다.</div>
+          <ul></ul>
+        </div>
+        <!-- .ranking -->
+        <div class="btn_area">
+          <button id="btn_new" class="btn_new" type="button">새로하기</button>
+          <!--<button class="btn_restart" type="button">다시하기</button>-->
+        </div>
+      </div>
+      <div class="bg"></div>
+    </div>
+    <!-- // #result(결과화면) -->
+
+  </div>
+  <!-- // #contents -->
+
+  <div id="bgSet">
+    <div class="bg_lobby"></div>
+    <div class="bg_game"></div>
+    <div class="bg_result"></div>
+  </div>
+
+</div>
+<!-- // #fWrap -->
+
+<script src="/js/underscore.min.js"></script>
+<script src="/js/ui.js"></script>
+<script src="/js/socket.js"></script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+/* @import url(http://fonts.googleapis.com/earlyaccess/kopubbatang.css); */
+@charset "utf-8";
+
+/* reset */
+html, body, div, span, applet, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, img, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,b, u, i, center,dl, dt, dd, ol, ul, li,fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, menu, nav, output, ruby, section, summary, time, mark, audio, video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;font-family:HalisGR-Light,sans-serif,dotum}
+article, aside, details, figcaption, figure, footer, header, menu, nav, section {display:block}
+body {line-height:1}
+ol, ul {list-style:none}
+blockquote, q {quotes:none}
+blockquote:before, blockquote:after,
+q:before, q:after {content:'';content:none}
+table {border-collapse:collapse;border-spacing:0}
+input[type=checkbox], input[type=radio]{vertical-align:middle;position:relative}
+input[type=radio]{-600px:2px}
+#accessibility, .skip, hr, legend, caption{display:block;overflow:hidden;position:absolute;top:-1000em;left:0}
+button{padding:0;margin:0;border:0;background:0;line-height:normal;cursor:pointer;outline:none}
+
+/* common */
+.card{display:inline-block;border-radius:5px;z-index:10}
+.card.move-slot{position:absolute !important;left:660px !important;bottom:415px !important}
+.card .wrap_card{position:relative;width:101px;height:160px;perspective:384px}
+.card .front,
+.card .back{overflow:hidden;position:absolute;left:0;top:0;width:100%;height:100%;border-radius:5px;transition:transform 0.5s;backface-visibility:hidden;box-shadow:2px 2px 10px #666}
+
+.card .front{background:url(../img/img-cover.jpg) no-repeat;background-size:auto 100%;z-index:2;transform: rotateY(0deg)}
+
+.card .back{background:url(../img/img-cards.jpg) no-repeat;background-size:auto 300%;transform:rotateY(180deg);}
+.card.type0 .back{background-position:left top}
+.card.type1 .back{background-position:50% top}
+.card.type2 .back{background-position:75% top}
+.card.type3 .back{background-position:right top}
+
+.card.type4 .back{background-position:left 50%}
+.card.type5 .back{background-position:25% 50%}
+.card.type6 .back{background-position:50% 50%}
+.card.type7 .back{background-position:75% 50%}
+.card.type8 .back{background-position:right 50%}
+
+.card.type9 .back{background-position:left bottom}
+.card.type10 .back{background-position:25% bottom}
+.card.type11 .back{background-position:50% bottom}
+.card.type12 .back{background-position:75% bottom}
+
+.card.flip .front{transform:rotateY(180deg)}
+.card.flip .back{transform:rotateY(360deg)}
+.card.hide span{display:none}
+
+.loading-bar{height:20px}
+.loading-bar span{display:inline-block;height:100%;width:100%;border:1px solid #694572;border-bottom-color:#694572;background-color:#bd8bc9;border-radius:20px;box-sizing:border-box;background-image:linear-gradient(-45deg, rgba(105, 69, 114, 1) 25%, transparent 25%, transparent 50%, rgba(105, 69, 114, 1) 50%, rgba(105, 69, 114, 1) 75%, transparent 75%, transparent);
+  background-size:50px 50px;
+  animation:move 2s linear infinite;
+  border-radius:20px;
+  overflow: hidden;
+  box-shadow:inset 0 10px 0 rgba(255,255,255,.3);
+  outline: 1px solid transparent
+}
+
+/*
+Animate the stripes
+*/
+@-webkit-keyframes move{
+  0% {background-position: 0 0}
+  100% {background-position: 50px 50px}
+}
+@-moz-keyframes move{
+  0% {background-position: 0 0;}
+  100% {background-position: 50px 50px;}
+}
+@-ms-keyframes move{
+  0% {background-position: 0 0;}
+  100% {background-position: 50px 50px;}
+}
+@keyframes move{
+  0% {background-position: 0 0;}
+  100% {background-position: 50px 50px;}
+}
+
+/** layout **/
+#fWrap{overflow:hidden}
+#fWrap.status-game{position:relative}
+
+#bgSet{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;background:url(../img/bg-body.jpg) repeat}
+#bgSet div{position:absolute;left:0;top:0;width:100%;height:100%}
+#bgSet .bg_lobby{background:#000;opacity:0.5}
+#bgSet .bg_game{box-shadow:0 0 300px #000 inset}
+
+#contents{position:relative;display:table;width:100%;height:100%}
+
+#lobby{overflow:hidden;position:absolute;left:50%;top:50%;width:640px;height:400px;padding-bottom:300px;margin:-350px 0 0 -320px;background:url(../img/bg-lobby.jpg) no-repeat;box-shadow:2px 2px 30px #000;border-radius:10px;visibility:visible}
+#lobby .wrap_lobby{position:relative;height:360px;padding:20px}
+#lobby .wrap_lobby:after{display:block;content:'';clear:both}
+#lobby #gameInfo{float:left}
+#lobby #gameInfo .notice{padding:20px 0;color:#fff;font-size:14px;line-height:20px}
+#lobby #gameInfo .notice strong{display:block;text-align:center}
+#lobby #userInfo{float:right;position:relative;width:300px;height:320px;}
+#lobby #userInfo h2.tit{height:20px;padding:10px 100px 30px 0;color:#ced2ff;text-transform:uppercase}
+#lobby #userInfo .user_num{position:absolute;right:0;top:10px;width:100px;height:20px;padding:10px 0 20px 0;color:#fff;font-size:13px;text-align:right}
+#lobby #userInfo .user_num .max{font-weight:bold}
+#lobby #userInfo .user_list{height:270px}
+#lobby #userInfo .user_list div{position:relative;height:20px;padding:5px 10px 5px 25px;margin-bottom:5px;color:#cccbdb;font-size:13px;background:rgba(0, 0, 0, 0.5)}
+#lobby #userInfo .user_list div .bu{position:absolute;left:0;top:0;width:15px;height:100%;background:#4975a4}
+#lobby #userInfo .user_list div.player{border:2px solid #ccc}
+#lobby .loading{clear:both;position:relative;padding-top:10px}
+#lobby .loading .msg{padding-top:5px;color:#333;font-size:12px;font-weight:bold;text-align:center}
+#lobby .btn_area{position:absolute;left:20px;top:260px;width:234px;text-align:center}
+#lobby .btn_area button{display:block;width:100%;height:20px;margin-bottom:10px;background:#ccc}
+#lobby .btn_area button:last-of-type{margin:0}
+#lobby .btn_area .btn_start{display:none}
+#fWrap[data-user=master] #lobby .btn_area .btn_start.ready{display:inline}
+
+#lobby .inp_user{position:absolute;left:20px;top:260px;width:234px;height:50px;text-align:center;z-index:1;background:pink}
+#lobby .inp_user .inp_nick{display:block;width:100%}
+#lobby .inp_user .btn_nick{width:100%;height:20px;margin-top:9px;background:lightskyblue}
+
+#lobby #chat{display:none;position:absolute;left:20px;bottom:30px;width:600px;height:245px;border:1px solid #000;background:rgba(0, 0, 0, 0.5)}
+#lobby #chat .wrap_chat{overflow:hidden;position:relative;height:245px}
+#lobby #chat .msg_area{position:absolute;left:0;bottom:30px;width:580px;height:195px;padding:10px;overflow-y:auto}
+#lobby #chat .msg_area div{padding-top:15px;color:#fff}
+#lobby #chat .msg_area div span{display:inline-block;}
+#lobby #chat .msg_area div .name{margin-right:10px}
+#lobby #chat .msg_area div .text{}
+#lobby #chat .msg_area div.player{text-align:right}
+#lobby #chat .msg_area div.player span{color:darkgoldenrod;font-weight:bold}
+#lobby #chat .msg_area div.player .name{display:none}
+#lobby #chat .inp_area{position:absolute;left:0;bottom:0;width:100%;height:30px;border-top:1px solid #000}
+#lobby #chat .inp_area .inp_chat{width:100%;height:30px;padding:0}
+#lobby #chat .inp_area .btn_chat{float:right;width:80px;height:30px;background:#ccc}
+
+  
+  
+/* #game */
+#contents #game{position:absolute;left:50%;top:50%;width:1240px;height:1000px;margin:-500px 0 0 -620px}
+#contents #game .wrap_game{position:relative;height:1000px}
+
+/* #cardSlot(사용된 카드 정보) */
+#cardSlot{position:absolute;left:50%;top:20px;width:488px;height:325px;margin-left:-244px;background:url(../img/bg-slot.png) no-repeat}
+#cardSlot .wrap_slot{position:relative;height:325px}
+#cardSlot .card_data{text-align:center;padding-top:20px}
+#cardSlot .card .wrap_card{width:127px;height:200px}
+#cardSlot .count{display:inline-block;margin-left:10px;color:#fff;font-size:20px;font-weight:bold;line-height:200px;vertical-align:top;}
+#cardSlot .count.hide{animation:hide-bg 1s}
+#cardSlot .card .front{border-radius:6px}
+#cardSlot .card .back{border-radius:10px}
+
+#cardSlot .game_data{position:absolute;left:15px;bottom:10px;width:458px;height:70px}
+#cardSlot .game_data li{float:left;width:32%;margin-right:2%;color:#fff;font-size:16px;text-align:center}
+#cardSlot .game_data li:last-of-type{float:right;margin:0}
+#cardSlot .game_data li .tit{display:block;height:28px;padding:5px 0;color:#77798f;font-size:14px;font-weight:bold;text-align:center}
+#cardSlot .game_data li.turn .now{color:red}
+
+
+/* #userList(참여자 정보) */
+#userList{position:absolute;left:30px;top:10px;width:201px;padding:20px;border-radius:10px;box-shadow:0 0 10px #222;background:rgba(0, 0, 0, 0.5)}
+#userList li{display:table;position:relative;height:28px;margin-bottom:10px;border:1px solid #242526;background:rgba(0, 0, 0, 0.5)}
+#userList li:nth-of-type(8){margin-bottom:0}
+#userList li .wrap_list{display:table-cell;vertical-align:middle}
+#userList li .wrap_list span{height:16px;color:#ccc;font-size:12px;line-height:16px;vertical-align:middle}
+#userList li .icons{position:absolute;left:0;top:0;width:3px;height:28px !important;border-right:1px solid #282c2e;font-size:0;background:#fff}
+#userList li .name{float:left;width:120px;padding:0 10px 0 14px}
+#userList li .remain_card{float:right;width:15px;height:16px;padding-left:25px;margin-right:10px;text-align:center;background:url(../img/icon-card.png) left center no-repeat;background-size:auto 16px}
+#userList li .remain_card .icon{}
+
+#userList li .icon_rank{display:none;position:absolute;left:-18px;top:6px;width:15px;height:15px;background:url(../img/icon-rank.png) no-repeat}
+#userList li.rank1 .icon_rank{display:block;background-position:left top}
+#userList li.rank2 .icon_rank{display:block;background-position:left -15px}
+#userList li.rank3 .icon_rank{display:block;background-position:left -30px}
+#userList li.rank4 .icon_rank{display:block;background-position:left -45px}
+#userList li.rank5 .icon_rank{display:block;background-position:left -60px}
+#userList li.rank6 .icon_rank{display:block;background-position:left -75px}
+#userList li.rank7 .icon_rank{display:block;background-position:left bottom}
+
+#userList li.turn .icons{background:red}
+#userList li.player .name{color:#fff;text-decoration:underline}
+
+/* #chat2(채팅) */
+#game #chat2{position:absolute;right:30px;top:10px;width:241px;height:350px;border:1px solid #000;background:rgba(0, 0, 0, 0.5)}
+#game #chat2 .wrap_chat{overflow:hidden;position:relative;height:350px}
+#game #chat2 .msg_area{position:absolute;left:0;bottom:30px;width:221px;height:300px;padding:10px;overflow-y:auto;}
+#game #chat2 .msg_area div{padding-top:15px;color:#fff}
+#game #chat2 .msg_area div span{display:inline-block;line-height:20px;font-size:12px}
+#game #chat2 .msg_area div .name{margin-right:10px}
+#game #chat2 .msg_area div .text{}
+#game #chat2 .msg_area div.player{text-align:right}
+#game #chat2 .msg_area div.player span{color:darkgoldenrod;font-weight:bold}
+#game #chat2 .msg_area div.player .name{display:none}
+#game #chat2 .inp_area{position:absolute;left:0;bottom:0;width:100%;height:30px;border-top:1px solid #000}
+#game #chat2 .inp_area .inp_chat{width:100%;height:30px;padding:0}
+#game #chat2 .inp_area .btn_chat{float:right;width:80px;height:30px;background:#ccc}
+
+
+/* #playerInfo(플레이어 정보) */
+#playerInfo{position:absolute;left:20px;bottom:20px;width:1200px;height:607px}
+#playerInfo.turn{animation:player-turn 3s infinite}
+#playerInfo .player_menu{display:table;width:100%;height:35px;padding:10px 0 5px 0;background:url(../img/bg-playerinfo.png) no-repeat}
+#playerInfo .player_menu .wrap_menu{display:table-cell;padding:0 30px;vertical-align:middle}
+
+#playerInfo .player_menu .name{float:left;height:27px;padding-right:30px;margin-right:30px;color:#fff;font-size:20px;line-height:27px;text-align:center;background:url(../img/bg-guide.png) right center no-repeat;text-outline:1px #000}
+
+#playerInfo .player_menu .remain_card{float:left;padding-right:26px;margin-right:30px;background:url(../img/bg-guide.png) right center no-repeat}
+#playerInfo .player_menu .remain_card .val{display:block;width:43px;height:27px;padding-left:34px;color:#fff;font-size:15px;line-height:27px;text-align:center;background:url(../img/icon-card.png) left top no-repeat;}
+#playerInfo .player_menu .msg{float:left;padding-right:26px;margin-right:30px;background:url(../img/bg-guide.png) right center no-repeat}
+#playerInfo .player_menu .msg .val{display:block;width:596px;height:27px;color:#c4c2ae;font-size:15px;line-height:27px}
+
+#playerInfo .player_menu .btn_area{position:absolute;right:30px;top:-2px;width:160px;height:54px;background:url(../img/bg-btnarea.png) center 7px no-repeat}
+#playerInfo .player_menu .btn_area button{float:left;width:56px;height:55px;background:url(../img/btn-player.png) no-repeat}
+#playerInfo .player_menu .btn_area button.btn_pass{float:right;background-position:left bottom}
+
+#playerInfo .card_set{height:522px;padding:35px 150px 0 150px;background:url(../img/bg-player.png) no-repeat;box-shadow:0 0 20px #000}
+
+#playerInfo .card_set .card{position:relative;left:0;top:0;display:inline-block;width:85px;height:135px;margin:0 22px 9px 0;padding:4px;cursor:pointer}
+#playerInfo .card_set .card span{width:85px;height:135px}
+#playerInfo .card_set .card .num{position:absolute;left:1px;top:1px;width:20px;height:20px;font-weight:bold;line-height:20px;text-align:center;border:1px solid #000000;border-radius:10px;background:#fff}
+#playerInfo .card_set .card:nth-of-type(8n){margin-right:0}
+#playerInfo .card_set .card.selected{box-shadow:0 0 5px #c72f2f;background:#c72f2f}
+#playerInfo .card_set .card.send{animation:0.5s hide-bg}
+
+#playerInfo .btn_reset{display:none}
+#fWrap[data-user=master] #playerInfo .btn_reset{display:none;position:absolute;right:0;bottom:0;width:80px;height:30px;background:red}
+
+  
+  /* result(결과 화면) */
+#fWrap #result{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0}
+#fWrap #result .bg{position:absolute;left:0;top:0;width:100%;height:100%;background:#000;opacity:0.5}
+#fWrap #result .wrap_result{position:absolute;left:50%;top:50%;width:400px;height:500px;margin:-250px 0 0 -200px;background:#fff}
+#fWrap #result .ranking .tit{padding:50px 0;text-align:center;font-weight:bold}
+#fWrap #result .ranking ul{padding:0 20px}
+#fWrap #result .ranking ul li{position:relative;padding:10px;border-bottom:1px solid #ccc}
+#fWrap #result .ranking ul li:after{display:block;content:'';clear:both}
+#fWrap #result .ranking ul li:last-of-type{border:none}
+#fWrap #result .ranking ul li .rank{float:left;width:60px;text-align:center}
+#fWrap #result .ranking ul li .name{float:left}
+#fWrap #result .btn_area{padding:20px 0;text-align:center}
+#fWrap #result .btn_area button:first-of-type{margin-right:20px}
+#fWrap #result .btn_area button{padding:10px 20px;background:#ccc}
+
+/** pageAnimation **/
+#fWrap.status-lobby #lobby{opacity:1;z-index:10}
+#fWrap.status-lobby #game{opacity:0;z-index:0}
+
+#fWrap.hide_lobby #lobby{animation:1.5s hide-lobby}
+#fWrap.hide_lobby #bgSet .bg_lobby{animation:1.5s hide-bg}
+
+#fWrap.status-game #lobby,
+#fWrap.status-game #bgSet .bg_lobby{opacity:0;z-index:0}
+#fWrap.status-game #game{animation:1.5s show-game;opacity:1;z-index:10}
+#fWrap.status-game #bgSet .bg_game{opacity:1;z-index:10}
+
+#fWrap.status-result #result{animation:1.5s show-game;opacity:1;z-index:11}
+#fWrap.status-result #result .wrap_result{z-index:11}
+#fWrap.status-result #game{opacity:1;z-index:10}
+
+@keyframes hide-lobby{
+  0% {opacity:1}
+  10%{margin-top:-170px}
+  100% {margin-top:-1200px;opacity:0}
+}
+@keyframes hide-chat{
+  0% {opacity:1}
+  10%{margin-top:240px}
+  100% {margin-top:-790px;opacity:0}
+}
+@keyframes hide-bg{
+  0% {opacity:1}
+  100% {opacity:0}
+}
+@keyframes show-game{
+  0% {opacity:0}
+  100% {opacity:1}
+}
+@keyframes move-slot{
+  0% {position:absolute}
+  100% {left:-100px;top:-100px}
+}
+@keyframes player-turn{
+  0% {box-shadow:0}
+  40% {box-shadow:0 0 80px #dddb48}
+  60% {box-shadow:0 0 80px #dddb48}
+  100% {box-shadow:0}
+}
