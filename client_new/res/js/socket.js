@@ -61,6 +61,8 @@ $(function(){
 
       if( data.server.master === null || data.server.master == data.server.my.sessionId )
         nav.show();
+      else
+        nav.hide();
 
       if( data.server.names[ data.server.my.sessionId ] ){
         divChat.show();
