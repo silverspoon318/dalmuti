@@ -79,6 +79,11 @@ wss.on( 'connection', function( ws ){
             return;
           }
 
+          if( data.needUser < 4 ){
+            mainSvc.oneSend( ws, { dalmuti: mainSvc.addMsg( '최소 필요 인원은 4명 입니다.' ), server: SERVER, isDeny: true } );
+            return;
+          }
+
           SERVER.needUser = parseInt( data.needUser );
           mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.getDalmuti(), server: SERVER, isRefresh: true } );
           mainSvc.start( CLIENTS, SERVER, cookies.sessionId );

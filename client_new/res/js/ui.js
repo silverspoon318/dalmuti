@@ -1,6 +1,6 @@
 /***************************************
 
- [GAME - Great Dalmuti] script.js
+ [GAME - Great Dalmuti] ui.js
 
 ***************************************/
 var dalmutiUI = function (data) {
