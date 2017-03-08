@@ -82,8 +82,11 @@ $(function(){
         uiSet.layoutSet.chat( data );
         divChat.find( '.msg_area' ).scrollTop( divChat.find( '.msg_area' ).prop( 'scrollHeight' ) );
         divChat2.find( '.msg_area' ).scrollTop( divChat2.find( '.msg_area' ).prop( 'scrollHeight' ) );
-        inChatMsg.val( '' );
-        inChatMsg2.val( '' );
+
+        if( data.userName == data.server.names[ data.server.my.sessionId ] ){
+          inChatMsg.val( '' );
+          inChatMsg2.val( '' );
+        }
         return;
       }
     },
