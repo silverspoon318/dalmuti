@@ -47,8 +47,6 @@ $(function(){
     onMsg: function( data ){
       data.dalmuti.mycard = _.sortBy( data.dalmuti.mycard, 'grade' );
       window.dalmuti.data = data;
-      var uiSet = null; 
-
       inNeedUser.val( data.server.needUser );
 
       if( data.isRefresh )
@@ -73,22 +71,20 @@ $(function(){
         divPlayerAdd.show();
       }
 
-      if( !window.dalmuti.isFlip ){ 
-        uiSet = new dalmutiUI( data );
+      var uiSet = window.dalmuti.uiSet = new dalmutiUI( data );
 
-        if( data.dalmuti.msg )
-          uiSet.layoutSet.msg( data.dalmuti.msg );
+      uiSet.layoutSet.turnCheck();
 
-        uiSet.layoutSet.turnCheck();
+      if( data.dalmuti.msg )
+        uiSet.layoutSet.msg( data.dalmuti.msg );
 
-        if( data.chatMsg ){
-          uiSet.layoutSet.chat( data );
-          divChat.find( '.msg_area' ).scrollTop( divChat.find( '.msg_area' ).prop( 'scrollHeight' ) );
-          divChat2.find( '.msg_area' ).scrollTop( divChat2.find( '.msg_area' ).prop( 'scrollHeight' ) );
-          inChatMsg.val( '' );
-          inChatMsg2.val( '' );
-          return;
-        }
+      if( data.chatMsg ){
+        uiSet.layoutSet.chat( data );
+        divChat.find( '.msg_area' ).scrollTop( divChat.find( '.msg_area' ).prop( 'scrollHeight' ) );
+        divChat2.find( '.msg_area' ).scrollTop( divChat2.find( '.msg_area' ).prop( 'scrollHeight' ) );
+        inChatMsg.val( '' );
+        inChatMsg2.val( '' );
+        return;
       }
     },
 
@@ -127,6 +123,10 @@ $(function(){
 
     btnSend.click(function(){
       var divSelected = divPlayerInfo.find( '.selected' );
+      
+      if( divSelected.length == 0 )
+        window.dalmuti.uiSet.layoutSet.msg( '카드를 선택해 주세요.' );
+
       divSelected.each(function( k, v ){
         var oThis = $( this );
 

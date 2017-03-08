@@ -96,8 +96,10 @@ var dalmutiUI = function (data) {
       $(myData.elements.remain).text(remainCard);
       $(myData.elements.name).text(myData.name);
 
+      this.turnCheck();
+
       // cardSet
-      $(myData.elements.cardSet).empty();
+      myData.elements.cardSet.empty();
       $(myData.cardList).each(function (idx) {
         var cardGrade = myData.cardList[idx].grade,
           cardId = myData.cardList[idx].id,
@@ -106,18 +108,21 @@ var dalmutiUI = function (data) {
         var cardEle = '<div class="card '+isFlip+' type'+cardGrade+'" data-grade="' + cardGrade + '" data-id="'+cardId+'">' + 
           '<div class="wrap_card"><span class="front"></span><span class="back"><span class="num">'+cardGrade+'</span></span></div></div>';
 
-        $(myData.elements.cardSet).append(cardEle);
+        myData.elements.cardSet.append(cardEle);
       });
-
-      this.turnCheck();
     },
     turnCheck: function(){
       // check myTurn
       if (myData.id == userData.turnUser) {
         $(myData.elements.wrap).addClass('turn');
-        this.msg('당신의 턴 입니다.');
+
+        if(myData.id == userData.lastUser)
+          this.msg('당신의 턴 입니다. 다시 왕이 되어서 아무 카드나 낼 수 있습니다.');
+        else
+          this.msg('당신의 턴 입니다.');
       }else{
         $(myData.elements.wrap).removeClass('turn');
+        this.msg('');
       }
     },
     userListSet: function () {  // 참여자 정보 출력
@@ -236,7 +241,6 @@ var dalmutiUI = function (data) {
         $('#fWrap').attr('class', 'status-game');
         setTimeout(function(){
           flipAni(flipIdx);
-          window.dalmuti.isFlip = true;
         }, 1400);
       }, 1400);
     },
@@ -245,7 +249,8 @@ var dalmutiUI = function (data) {
       this.cardSlotSet();
 
       // myCardSet
-      this.myDataSet('flip');
+      if(!data.chatMsg && myData.cardList.length != myData.elements.cards.length)
+        this.myDataSet('flip');
 
       // userListSet
       this.userListSet();
@@ -295,6 +300,11 @@ var dalmutiUI = function (data) {
     // 로비
     this.layoutSet.lobbySet();
   }else if ( gameStatus == 1 ) {
+    if(!data.server.names[data.server.my.sessionId]){
+      this.layoutSet.lobbySet();
+      return;
+    }
+
     // 게임 시작
     if ( uiStatus == 'status-lobby' ) {
       // 게임 초기시작(테이블 셋팅)
