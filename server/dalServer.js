@@ -100,8 +100,8 @@ wss.on( 'connection', function( ws ){
             return;
           }
 
-          if( parseInt( data.needUser ) < 4 ){
-            mainSvc.oneSend( ws, { dalmuti: mainSvc.addMsg( '최소 필요 인원은 4명 입니다.' ), server: SERVER, isDeny: true } );
+          if( parseInt( data.needUser ) < 4 || parseInt( data.needUser ) > 8 ){
+            mainSvc.oneSend( ws, { dalmuti: mainSvc.addMsg( '적정 필요 인원은 4 ~ 8명 입니다.' ), server: SERVER, isDeny: true } );
             return;
           }
 
