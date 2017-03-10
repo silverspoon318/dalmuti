@@ -25,7 +25,21 @@ wss.on( 'connection', function( ws ){
           mainSvc.allSend( CLIENTS, { dalmuti: mainSvc.getDalmuti(), server: SERVER } );
         break;
         case 1: // game start.
-          var DALMUTI = mainSvc.getDalmuti();
+          var DALMUTI = mainSvc.getDalmuti()
+            , count = 0
+            , start = function(){
+              if( cookies.sessionId !== undefined ){
+
+                if( SERVER.master === null )
+                  SERVER.master = cookies.sessionId; 
+
+                CLIENTS[ cookies.sessionId ].ready = 1;
+                SERVER.readyLength++;
+                SERVER.names[ cookies.sessionId ] = data.name;
+
+                mainSvc.start( CLIENTS, SERVER, cookies.sessionId );
+              }
+            };
 
           if( DALMUTI.gameStatus == 1 ){
             mainSvc.oneSend( ws, { dalmuti: mainSvc.addMsg( '다른 게임 실행 중입니다.' ), server: SERVER, isDeny: true } );
@@ -37,16 +51,23 @@ wss.on( 'connection', function( ws ){
             return;
           }
 
-          if( cookies.sessionId !== undefined ){
-            if( SERVER.master === null )
-              SERVER.master = cookies.sessionId; 
-
-            CLIENTS[ cookies.sessionId ].ready = 1;
-            SERVER.readyLength++;
-            SERVER.names[ cookies.sessionId ] = data.name;
-
-            mainSvc.start( CLIENTS, SERVER, cookies.sessionId );
+          if( Object.keys( SERVER.names ).length == 0 ){
+            start();
+            return;
           }
+
+          for( var i in SERVER.names ){
+            if( SERVER.names[ i ] == data.name ){
+              mainSvc.oneSend( ws, { dalmuti: mainSvc.addMsg( '동일한 이름이 있습니다.' ), server: SERVER, isDeny: true } );
+              return;
+            }
+
+            count++;
+
+            if( count == Object.keys( SERVER.names ).length )
+              start();
+          }
+
         break;
         case 2: // card remove.
           mainSvc.removeCard( CLIENTS, SERVER, data );
